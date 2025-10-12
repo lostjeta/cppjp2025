@@ -1,14 +1,15 @@
-#pragma once
+ï»¿#pragma once
 
-class ZMatrix {
+class ZMatrix
+{
 public:
 	double m[4][4];
 
 public:
-	ZMatrix(); // ´ÜÀ§Çà·Ä·Î ÃÊ±âÈ­
+	ZMatrix(); // ë‹¨ìœ„í–‰ë ¬ë¡œ ì´ˆê¸°í™”
 
 	ZMatrix operator*(const ZMatrix& rhs) const;
-	
+
 	static ZMatrix CreateScale(double sx, double sy, double sz);
 	static ZMatrix CreateRotationX(double radians);
 	static ZMatrix CreateRotationY(double radians);

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <iostream>
 
@@ -13,7 +13,7 @@ public:
 	ZVector3(const ZVector3& other);
 	~ZVector3();
 
-	// ¸â¹ö ÇÔ¼ö
+	// ë©¤ë²„ í•¨ìˆ˜
 	double Dot(const ZVector3& rhs) const;
 	ZVector3 Cross(const ZVector3& rhs) const;
 	ZVector3 Scale(double k) const;
@@ -23,14 +23,14 @@ public:
 	ZVector3 Normalize() const;
 	ZVector3 Transform(const ZMatrix& matrix) const;
 
-	// Á¤Àû(static) ÇÔ¼ö
-	static double Dot(const ZVector3& u, const ZVector3& v); // ³»Àû (Á¤Àû ¸â¹ö ÇÔ¼ö)
-	static ZVector3 Cross(const ZVector3& u, const ZVector3& v); // ¿ÜÀû (Á¤Àû ¸â¹ö ÇÔ¼ö)
+	// ì •ì (static) í•¨ìˆ˜
+	static double Dot(const ZVector3& u, const ZVector3& v); // ë‚´ì  (ì •ì  ë©¤ë²„ í•¨ìˆ˜)
+	static ZVector3 Cross(const ZVector3& u, const ZVector3& v); // ì™¸ì  (ì •ì  ë©¤ë²„ í•¨ìˆ˜)
 
 	ZVector3 operator+(const ZVector3& other) const;
 	ZVector3 operator-(const ZVector3& other) const;
 	void operator=(const ZVector3& rhs);
-	ZVector3 operator*(const ZVector3& rhs) const; // ¼ººĞº° °ö¼À (Hadamard Product)
+	ZVector3 operator*(const ZVector3& rhs) const; // ì„±ë¶„ë³„ ê³±ì…ˆ (Hadamard Product)
 	ZVector3 operator*(double k) const;
 
 

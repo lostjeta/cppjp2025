@@ -1,4 +1,4 @@
-#include "ZVector3.h"
+ï»¿#include "ZVector3.h"
 #include "ZMatrix.h"
 #include <cmath> // sqrt, sin, cos
 
@@ -61,7 +61,7 @@ double ZVector3::radBetween(const ZVector3& a, const ZVector3& b) const
 
 	double cosTheta = dotProduct / (magA * magB);
 
-	// floating point ¿ÀÂ÷ º¸Á¤ ([-1, 1] ¹üÀ§ ¹Û ¹æÁö)
+	// floating point           ([-1, 1]             )
 	if (cosTheta > 1.0) cosTheta = 1.0;
 	if (cosTheta < -1.0) cosTheta = -1.0;
 
@@ -86,7 +86,7 @@ ZVector3 ZVector3::Cross(const ZVector3& rhs) const
 
 ZVector3 ZVector3::Transform(const ZMatrix& matrix) const
 {
-	// D3D ±âÁØ (º¤ÅÍ * Çà·Ä) ÀÌ¹Ç·Î µ¿Â÷ÁÂÇ¥ w=1·Î °è»ê
+	// D3D      (     *    )  Ì¹Ç·        Ç¥ w=1      
 	float newX = x * matrix.m[0][0] + y * matrix.m[1][0] + z * matrix.m[2][0] + 1.0 * matrix.m[3][0];
 	float newY = x * matrix.m[0][1] + y * matrix.m[1][1] + z * matrix.m[2][1] + 1.0 * matrix.m[3][1];
 	float newZ = x * matrix.m[0][2] + y * matrix.m[1][2] + z * matrix.m[2][2] + 1.0 * matrix.m[3][2];

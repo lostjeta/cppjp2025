@@ -1,4 +1,4 @@
-# CPPGP2025
+﻿# CPPGP2025
 
 git commit -m '메시지 주요 접두어'  
 
@@ -33,4 +33,4 @@ ci - CI/CD 관련 설정 변경
 ex) ci: GitHub Actions 워크플로우 수정  
 
 revert - 이전 커밋 되돌리기  
-ex) revert: "feat: 다크 모드 추가" 커밋 되돌림  
+ex) revert: "feat: 다크 모드 추가" 커밋 되돌림 

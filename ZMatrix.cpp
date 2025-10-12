@@ -1,4 +1,4 @@
-#include "ZMatrix.h"
+﻿#include "ZMatrix.h"
 #include <cmath> // sin, cos
 
 ZMatrix::ZMatrix()
@@ -64,9 +64,9 @@ ZMatrix ZMatrix::operator*(const ZMatrix& rhs) const
 		for (int j = 0; j < 4; ++j)
 		{
 			result.m[i][j] = (this->m[i][0] * rhs.m[0][j]) +
-				(this->m[i][1] * rhs.m[1][j]) +
-				(this->m[i][2] * rhs.m[2][j]) +
-				(this->m[i][3] * rhs.m[3][j]);
+							 (this->m[i][1] * rhs.m[1][j]) +
+							 (this->m[i][2] * rhs.m[2][j]) +
+							 (this->m[i][3] * rhs.m[3][j]);
 		}
 	}
 	return result;
