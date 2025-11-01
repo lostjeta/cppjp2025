@@ -2,6 +2,7 @@
 #include "ChiliException.h"
 #include <wrl.h> // ComPtr
 #include "DxgiInfoManager.h"
+#include "ZConditionalNoExcept.h"
 
 // D3D 11의 초기화 및 핵심 인터페이스 관리
 
@@ -10,10 +11,19 @@ class ZGraphics
 	friend class ZGraphicsResource;
 
 private:
+    DirectX::XMMATRIX projection;
+
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;			// D3D11 장치, 리소스 생성 및 관리
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;			// 스왑 체인, 후면 버퍼와 화면 출력을 교체
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;	// D3D11 장치 컨텍스트, 렌더링 명령을 GPU에 전달
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pTarget;	// 렌더 타겟 뷰, 렌더링 결과가 저장되는 곳
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
+    Microsoft::WRL::ComPtr<ID3D11BlendState> pBlendState;	// 알파 블렌드 상태
+
+    double winRatio;
+    HANDLE m_hWnd;
+    DWORD m_ClientWidth;
+    DWORD m_ClientHeight;
 
 #ifndef NDEBUG
 	DxgiInfoManager infoManager;
@@ -58,7 +68,7 @@ public:
 	};
 
 public:
-	ZGraphics(HWND hWnd);
+	ZGraphics(HWND hWnd, double winRatio, DWORD width, DWORD height);
 
 	// 복사 생성자와 대입 연산자를 사용하지 않는다. (객체 복사 방지)
 	// -- D3D 리소스 고유하게 유지
@@ -74,7 +84,17 @@ public:
 	// green (0.0f ~ 1.0f)
 	// blue (0.0f ~ 1.0f)
 	void ClearBuffer(float red, float green, float blue) noexcept;
+    void SetViewport() noexcept;
+    void RenderIndexed(UINT count) noxnd;
+    void SetProjection(DirectX::FXMMATRIX proj) noexcept;
+    DirectX::XMMATRIX GetProjection() const noexcept;
 
-	// Basic
-	void DrawTriangle();
+    // DirectXTK 사용을 위한 인터페이스 접근 메서드
+    ID3D11Device* GetDeviceCOM() noexcept;
+    ID3D11DeviceContext* GetDeviceContext() noexcept;
+    ID3D11BlendState* GetBlendState() noexcept;
+    HWND GetHWND() noexcept;
+    DWORD GetClientWidth();
+    DWORD GetClientHeight();
 };
+

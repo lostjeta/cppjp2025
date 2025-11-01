@@ -19,17 +19,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BasicRenderState.cpp" />
+    <ClCompile Include="BasicRenderStateEx.cpp" />
     <ClCompile Include="ChiliException.cpp" />
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DxgiInfoManager.cpp" />
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="SampleBox.cpp" />
+    <ClCompile Include="Sheet.cpp" />
     <ClCompile Include="ZApplication.cpp" />
+    <ClCompile Include="ZFont.cpp" />
     <ClCompile Include="ZGraphics.cpp" />
     <ClCompile Include="ZGraphicsResource.cpp" />
+    <ClCompile Include="ZIndexBuffer.cpp" />
+    <ClCompile Include="ZInitFile.cpp" />
+    <ClCompile Include="ZInputLayout.cpp" />
     <ClCompile Include="ZMatrix.cpp" />
+    <ClCompile Include="ZPixelShader.cpp" />
+    <ClCompile Include="ZRenderable.cpp" />
+    <ClCompile Include="ZSampler.cpp" />
+    <ClCompile Include="ZTexture.cpp" />
+    <ClCompile Include="ZTopology.cpp" />
+    <ClCompile Include="ZTransformVSConstBuffer.cpp" />
     <ClCompile Include="ZVector3.cpp" />
+    <ClCompile Include="ZVertex.cpp" />
+    <ClCompile Include="ZVertexBuffer.cpp" />
+    <ClCompile Include="ZVertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicRenderState.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliWin.h" />
@@ -38,19 +56,46 @@
     <ClInclude Include="DxgiInfoManager.h" />
     <ClInclude Include="GameGlobal.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="SampleBox.h" />
+    <ClInclude Include="Sheet.h" />
     <ClInclude Include="WindowsThrowMacros.h" />
     <ClInclude Include="ZApplication.h" />
+    <ClInclude Include="ZBindable.h" />
+    <ClInclude Include="ZBindableBase.h" />
+    <ClInclude Include="ZColor.h" />
+    <ClInclude Include="ZConditionalNoExcept.h" />
+    <ClInclude Include="ZConstBuffer.h" />
     <ClInclude Include="ZD3D11.h" />
+    <ClInclude Include="ZFont.h" />
     <ClInclude Include="ZGraphics.h" />
     <ClInclude Include="ZGraphicsResource.h" />
+    <ClInclude Include="ZGUI.h" />
+    <ClInclude Include="ZIndexBuffer.h" />
+    <ClInclude Include="ZIndexedTriangleList.h" />
+    <ClInclude Include="ZInitFile.h" />
+    <ClInclude Include="ZInputLayout.h" />
+    <ClInclude Include="ZMath.h" />
     <ClInclude Include="ZMatrix.h" />
+    <ClInclude Include="ZPixelShader.h" />
+    <ClInclude Include="ZRenderable.h" />
+    <ClInclude Include="ZRenderableBase.h" />
+    <ClInclude Include="ZSampler.h" />
+    <ClInclude Include="ZTexture.h" />
+    <ClInclude Include="ZTopology.h" />
+    <ClInclude Include="ZTransformVSConstBuffer.h" />
     <ClInclude Include="ZVector3.h" />
+    <ClInclude Include="ZVertex.h" />
+    <ClInclude Include="ZVertexBuffer.h" />
+    <ClInclude Include="ZVertexShader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl" />
     <None Include="DXGetErrorString.inl" />
     <None Include="DXTrace.inl" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
@@ -59,7 +104,51 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="PixelShaderCubeDepth.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="PixelShaderIndexed.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="TexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="TextureVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VertexShaderConst.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VertexShaderCubeDepth.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="VertexShaderIndexed.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -150,8 +239,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);IS_DEBUG=true</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -164,7 +254,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);IS_DEBUG=false</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -176,5 +266,12 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\directxtk_desktop_win10.2025.7.10.1\build\native\directxtk_desktop_win10.targets" Condition="Exists('packages\directxtk_desktop_win10.2025.7.10.1\build\native\directxtk_desktop_win10.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\directxtk_desktop_win10.2025.7.10.1\build\native\directxtk_desktop_win10.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\directxtk_desktop_win10.2025.7.10.1\build\native\directxtk_desktop_win10.targets'))" />
+  </Target>
 </Project>

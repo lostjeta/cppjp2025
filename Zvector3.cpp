@@ -87,9 +87,9 @@ ZVector3 ZVector3::Cross(const ZVector3& rhs) const
 ZVector3 ZVector3::Transform(const ZMatrix& matrix) const
 {
 	// D3D      (     *    )  ̹Ƿ        ǥ w=1      
-	float newX = x * matrix.m[0][0] + y * matrix.m[1][0] + z * matrix.m[2][0] + 1.0 * matrix.m[3][0];
-	float newY = x * matrix.m[0][1] + y * matrix.m[1][1] + z * matrix.m[2][1] + 1.0 * matrix.m[3][1];
-	float newZ = x * matrix.m[0][2] + y * matrix.m[1][2] + z * matrix.m[2][2] + 1.0 * matrix.m[3][2];
+	double newX = x * matrix.m[0][0] + y * matrix.m[1][0] + z * matrix.m[2][0] + 1.0 * matrix.m[3][0];
+    double newY = x * matrix.m[0][1] + y * matrix.m[1][1] + z * matrix.m[2][1] + 1.0 * matrix.m[3][1];
+    double newZ = x * matrix.m[0][2] + y * matrix.m[1][2] + z * matrix.m[2][2] + 1.0 * matrix.m[3][2];
 	return ZVector3(newX, newY, newZ);
 }
 

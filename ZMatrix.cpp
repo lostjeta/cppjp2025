@@ -20,8 +20,8 @@ ZMatrix ZMatrix::CreateScale(double sx, double sy, double sz)
 ZMatrix ZMatrix::CreateRotationX(double radians)
 {
 	ZMatrix mat;
-	float c = cos(radians);
-	float s = sin(radians);
+	double c = cos(radians);
+	double s = sin(radians);
 	mat.m[1][1] = c; mat.m[1][2] = -s;
 	mat.m[2][1] = s; mat.m[2][2] = c;
 	return mat;
@@ -30,8 +30,8 @@ ZMatrix ZMatrix::CreateRotationX(double radians)
 ZMatrix ZMatrix::CreateRotationY(double radians)
 {
 	ZMatrix mat;
-	float c = cos(radians);
-	float s = sin(radians);
+	double c = cos(radians);
+	double s = sin(radians);
 	mat.m[0][0] = c; mat.m[0][2] = -s;
 	mat.m[2][0] = s; mat.m[2][2] = c;
 	return mat;

@@ -5,17 +5,21 @@
 // Windows includes
 #include <windows.h>
 #include <tchar.h>
+#include <mmsystem.h>
 
 // Standard ANSI-C includes
 #include <time.h>
+#include <assert.h>
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include <string>
 #include <memory>
+#include <random>
 
 // DirectX includes
 #include <d3d11.h>
+#include <DirectXMath.h>
 #include "dxerr.h"
 #include "ChiliException.h"
 
@@ -34,6 +38,9 @@ inline int RectHeight(RECT& rc) { return ((rc).bottom - (rc).top); }
 // D3D 활용 기본 그래픽 클래스들
 #include "ZGraphics.h"
 #include "ZGraphicsResource.h"
+#include "ZTexture.h"
+#include "ZFont.h"
+#include "ZInitFile.h"
 
 //------------------------------------------------------------------------------
 // Framework

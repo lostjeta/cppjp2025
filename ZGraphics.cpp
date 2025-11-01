@@ -10,8 +10,15 @@
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
-ZGraphics::ZGraphics(HWND hWnd)
+ZGraphics::ZGraphics(HWND hWnd, double winRatio, DWORD width, DWORD height)
+    :
+    winRatio(winRatio),
+    m_hWnd(hWnd),
+    m_ClientWidth(width),
+    m_ClientHeight(height)
 {
+    HRESULT hr;
+
 	// 스왑 체인을 설정하기 위한 구조체입니다.
 	DXGI_SWAP_CHAIN_DESC sd = {};
 	// 후면 버퍼의 너비와 높이를 설정합니다. 0으로 설정하면 윈도우 크기에 맞춰 자동으로 조절됩니다.
@@ -70,6 +77,53 @@ ZGraphics::ZGraphics(HWND hWnd)
 		&pTarget			// ppRTView: 생성된 렌더 타겟 뷰를 받을 포인터입니다.
 	);
 
+    // depth 버퍼 초기화 할 때 사용한다.
+    // create depth stensil state
+    D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+    dsDesc.DepthEnable = TRUE;
+    dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    dsDesc.DepthFunc = D3D11_COMPARISON_LESS; // z축으로 가까운 것이 다른 것을 오버라이드한다.
+    wrl::ComPtr<ID3D11DepthStencilState> pDSState;
+    GFX_THROW_INFO(pDevice->CreateDepthStencilState(&dsDesc, &pDSState));
+
+    // bind depth state
+    pContext->OMSetDepthStencilState(pDSState.Get(), 1u);
+
+    // create depth stensil texture
+    wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
+    D3D11_TEXTURE2D_DESC descDepth = {};
+    descDepth.Width = (UINT)m_ClientWidth;
+    descDepth.Height = (UINT)m_ClientHeight;
+    descDepth.MipLevels = 1u;
+    descDepth.ArraySize = 1u;
+    descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+    descDepth.SampleDesc.Count = 1u;
+    descDepth.SampleDesc.Quality = 0u;
+    descDepth.Usage = D3D11_USAGE_DEFAULT;
+    descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    GFX_THROW_INFO(pDevice->CreateTexture2D(&descDepth, nullptr, &pDepthStencil));
+
+    // create view of depth stensil texture
+    D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
+    descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+    descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    descDSV.Texture2D.MipSlice = 0u;
+    GFX_THROW_INFO(pDevice->CreateDepthStencilView(pDepthStencil.Get(), &descDSV, &pDSV));
+
+    // bind depth stensil view to OM
+    pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
+
+    // create alpha blend state
+    D3D11_BLEND_DESC blendDesc = {};
+    blendDesc.RenderTarget[0].BlendEnable = TRUE;
+    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+    GFX_THROW_INFO(pDevice->CreateBlendState(&blendDesc, &pBlendState));
 }
 
 void ZGraphics::EndFrame()
@@ -101,104 +155,95 @@ void ZGraphics::ClearBuffer(float red, float green, float blue) noexcept
 	// 렌더 타겟 뷰를 지정된 색상으로 초기화합니다.
 	const float color[] = { red,green,blue,1.0f }; // RGBA 순서
 	pContext->ClearRenderTargetView(pTarget.Get(), color);
+    pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void ZGraphics::DrawTriangle()
+// 뷰포트(Viewport)를 설정하는 함수
+// 뷰포트는 3D 공간의 렌더링 결과를 2D 화면의 어느 영역에 표시할지를 정의합니다.
+// 예를 들어, 분할 화면 게임에서 각 플레이어의 화면 영역을 지정할 때 사용됩니다.
+void ZGraphics::SetViewport() noexcept
 {
-	HRESULT hr;
-
-	struct Vertex
-	{
-		struct
-		{
-			float x;
-			float y;
-		} pos;
-	};
-
-	// NDC 화면 가운데가 (0,0), X(-1,1), Y(-1,1)
-	// 왼손좌표계 앞면 : CW (Clock Wise)
-	Vertex vertices[] =
-	{
-		{ 0.0f, 0.5f },
-		{ 0.5f, -0.5f },
-		{ -0.5f, -0.5f },
-	};
-
-	// Create VertexBuffer
-	wrl::ComPtr<ID3D11Buffer> pVertexBuffer;
-	D3D11_BUFFER_DESC bd = {};
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.CPUAccessFlags = 0u;
-	bd.MiscFlags = 0u;
-	bd.ByteWidth = sizeof(vertices);
-	bd.StructureByteStride = sizeof(Vertex);
-
-	D3D11_SUBRESOURCE_DATA sd = {};
-	sd.pSysMem = vertices;
-	GFX_THROW_INFO(pDevice->CreateBuffer(&bd, &sd, &pVertexBuffer));
-
-	// Bind vertex buffer to pipeline
-	const UINT stride = sizeof(Vertex);
-	const UINT offset = 0u;
-	pContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
-
-	// Create pixel shader
-	wrl::ComPtr<ID3D11PixelShader> pPixelShader;
-	wrl::ComPtr<ID3DBlob> pBlob;
-	GFX_THROW_INFO(D3DReadFileToBlob(L"./x64/Debug/PixelShader.cso", &pBlob));
-	GFX_THROW_INFO(pDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pPixelShader));
-
-	// bind pixel shader
-	pContext->PSSetShader(pPixelShader.Get(), nullptr, 0u);
-
-	// Create vertex shader
-	wrl::ComPtr<ID3D11VertexShader> pVertexShader;
-	GFX_THROW_INFO(D3DReadFileToBlob(L"./x64/Debug/VertexShader.cso", &pBlob));
-	GFX_THROW_INFO(pDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pVertexShader));
-
-	// Bind vertex shader
-	pContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
-
-	// VertexShader의 바이트코드(pBlob)가 필요하기 때문에 PixelShader를 먼저 생성한다.
-	wrl::ComPtr<ID3D11InputLayout> pInputLayout;
-	const D3D11_INPUT_ELEMENT_DESC ied[] =
-	{
-		{ "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	GFX_THROW_INFO(pDevice->CreateInputLayout(
-		ied, (UINT)std::size(ied),
-		pBlob->GetBufferPointer(),
-		pBlob->GetBufferSize(),
-		&pInputLayout
-	));
-	// Bind vertex layout
-	pContext->IASetInputLayout(pInputLayout.Get());
-
-	// Bind render target
-	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), nullptr);
-
-	// Set primitive topology to triangle list (groups of 3 vertices)
-	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// Configure viewport
-	D3D11_VIEWPORT vp;
-	vp.Width = (float)800;
-	vp.Height = (float)600;
-	vp.MinDepth = 0;
-	vp.MaxDepth = 1;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	pContext->RSSetViewports(1u, &vp);
-
-	GFX_THROW_INFO_ONLY(pContext->Draw((UINT)std::size(vertices), 0u));
+    // D3D11_VIEWPORT 구조체를 생성하여 뷰포트 설정을 정의합니다.
+    D3D11_VIEWPORT vp;
+    
+    // Width: 뷰포트의 너비를 픽셀 단위로 설정합니다.
+    // 클라이언트 영역의 전체 너비를 사용합니다.
+    vp.Width = (float)m_ClientWidth;
+    
+    // Height: 뷰포트의 높이를 픽셀 단위로 설정합니다.
+    // 클라이언트 영역의 전체 높이를 사용합니다.
+    vp.Height = (float)m_ClientHeight;
+    
+    // MinDepth: 깊이 버퍼의 최소값입니다. (0.0 = 카메라에 가장 가까운 지점)
+    // 일반적으로 0.0으로 설정하여 Near Plane을 나타냅니다.
+    vp.MinDepth = 0;
+    
+    // MaxDepth: 깊이 버퍼의 최대값입니다. (1.0 = 카메라에서 가장 먼 지점)
+    // 일반적으로 1.0으로 설정하여 Far Plane을 나타냅니다.
+    vp.MaxDepth = 1;
+    
+    // TopLeftX: 뷰포트의 왼쪽 상단 X 좌표입니다.
+    // 0으로 설정하면 화면의 왼쪽 끝부터 시작합니다.
+    vp.TopLeftX = 0;
+    
+    // TopLeftY: 뷰포트의 왼쪽 상단 Y 좌표입니다.
+    // 0으로 설정하면 화면의 위쪽 끝부터 시작합니다.
+    vp.TopLeftY = 0;
+    
+    // RSSetViewports: Rasterizer Stage에 뷰포트를 설정합니다.
+    // 첫 번째 인자(1u): 설정할 뷰포트의 개수 (여러 개 설정 가능)
+    // 두 번째 인자(&vp): 뷰포트 구조체 배열의 포인터
+    pContext->RSSetViewports(1u, &vp);
 }
 
+void ZGraphics::RenderIndexed(UINT count) noxnd
+{
+    GFX_THROW_INFO_ONLY(pContext->DrawIndexed(count, 0u, 0u));
+}
 
+void ZGraphics::SetProjection(DirectX::FXMMATRIX proj) noexcept
+{
+    projection = proj;
+}
 
+DirectX::XMMATRIX ZGraphics::GetProjection() const noexcept
+{
+    return projection;
+}
 
+ID3D11Device* ZGraphics::GetDeviceCOM() noexcept
+{
+    return pDevice.Get();
+}
+
+ID3D11DeviceContext* ZGraphics::GetDeviceContext() noexcept
+{
+    return pContext.Get();
+}
+
+ID3D11BlendState* ZGraphics::GetBlendState() noexcept
+{
+    return pBlendState.Get();
+}
+
+HWND ZGraphics::GetHWND() noexcept
+{
+    return static_cast<HWND>(m_hWnd);
+}
+
+DWORD ZGraphics::GetClientWidth()
+{
+    return m_ClientWidth;
+}
+
+DWORD ZGraphics::GetClientHeight()
+{
+    return m_ClientHeight;
+}
+
+//------------------------------------------------------------------------------
 // Graphics exception stuff
+
 ZGraphics::HrException::HrException(int line, const char* file, HRESULT hr, std::vector<std::string> infoMsgs) noexcept
 	:
 	Exception(line, file),
