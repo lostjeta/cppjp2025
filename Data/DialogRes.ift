@@ -1,0 +1,46 @@
+IFT 
+
+[Description]
+TITLE : 다이얼로그 ID
+DialogName : 다이얼로그 이름
+X : 다이얼로그 인식 영역 X
+Y : 다이얼로그 인식 영역 Y
+Widht : 다이얼로그 인식 영역 넓이 Width
+Height : 다이얼로그 인식 영역 높이 Height
+Keyboard : 키보드 사용 유무, TRUE(1), FALSE(0)
+Mouse : 마우스 사용 유무, TRUE(1), FALSE(0)
+Dragable : 드래그 가능 유무, TRUE(1), FALSE(0) (다이얼로그 인식 영역 내부를 의미한다.)
+Visible : 다이얼로그 표시 유무, TRUE(1), FALSE(0)
+
+[0]
+DialogName : StatusBar
+X : 0
+Y : 0
+Width : 1024
+Height : 40
+Keyboard : 1
+Mouse : 1
+Dragable : 1
+Visible : 1
+
+[1]
+DialogName : Inventory
+X : 100
+Y : 60
+Width : 286
+Height : 400
+Keyboard : 1
+Mouse : 1
+Dragable : 1
+Visible : 1
+
+[2]
+DialogName : Character
+X : 400
+Y : 60
+Width : 286
+Height : 400
+Keyboard : 1
+Mouse : 1
+Dragable : 1
+Visible : 1

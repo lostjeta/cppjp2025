@@ -1,0 +1,310 @@
+IFT 
+
+[Label Description]
+TITLE : 컨트롤 ID
+Description : 사용 의도
+DialogName : 소속 다이얼로그 이름
+Type : ZGUI_CONTROL_TYPE에 일치하는 값을 사용한다. Ex) 0 = ZGUI_CONTROL_LABEL
+HotKey : Virtual Keycode를 적는다. (없으면 0)
+Text : 컨트롤이 표시하는 텍스트
+FontID : FontList의 ID값
+AlignHorizontal : (Left, Center, Right = 0, 1, 2)
+AlignVertical : (Top, VCenter, Bottom = 0, 1, 2)
+dstLeft : 화면 표시 영역 Left
+dstTop : 화면 표시 영역 Top
+dstRight : 화면 표시 영역 Right
+dstBottom : 화면 표시 영역 Bottom
+Default : 기본 컨트롤 유무, TRUE(1), FALSE(0)
+Enable : 활성화 유무, TRUE(1), FALSE(0)
+Visible : 화면 보임 유무, TRUE(1), FALSE(0)
+
+[Image Description]
+TITLE : 컨트롤 ID
+Description : 사용 의도
+DialogName : 소속 다이얼로그 이름
+Type : ZGUI_CONTROL_TYPE에 일치하는 값을 사용한다. Ex) 0 = ZGUI_CONTROL_LABEL
+HotKey : Virtual Keycode를 적는다. (없으면 0)
+Text : 컨트롤이 표시하는 텍스트
+FontID : FontList의 ID값
+AlignHorizontal : (Left, Center, Right = 0, 1, 2)
+AlignVertical : (Top, VCenter, Bottom = 0, 1, 2)
+TextureID : TextureList의 ID값
+dstLeft : 화면 표시 영역 Left
+dstTop : 화면 표시 영역 Top
+dstRight : 화면 표시 영역 Right
+dstBottom : 화면 표시 영역 Bottom
+srcLeft : 텍스쳐에서 읽는 영역 Left
+srcTop : 텍스쳐에서 읽는 영역 Top
+srcRight : 텍스쳐에서 읽는 영역 Right
+srcBottom : 텍스쳐에서 읽는 영역 Bottom
+Default : 기본 컨트롤 유무, TRUE(1), FALSE(0)
+Enable : 활성화 유무, TRUE(1), FALSE(0)
+Visible : 화면 보임 유무, TRUE(1), FALSE(0)
+
+[Button Description]
+TITLE : 컨트롤 ID
+Description : 사용 의도
+DialogName : 소속 다이얼로그 이름
+Type : ZGUI_CONTROL_TYPE에 일치하는 값을 사용한다. Ex) 0 = ZGUI_CONTROL_LABEL
+HotKey : Virtual Keycode를 적는다. (없으면 0)
+Text : 컨트롤이 표시하는 텍스트
+FontID : FontList의 ID값
+AlignHorizontal : (Left, Center, Right = 0, 1, 2)
+AlignVertical : (Top, VCenter, Bottom = 0, 1, 2)
+TextureID : TextureList의 ID값
+dstLeft : 화면 표시 영역 Left
+dstTop : 화면 표시 영역 Top
+dstRight : 화면 표시 영역 Right
+dstBottom : 화면 표시 영역 Bottom
+srcLeft : 텍스쳐에서 읽는 영역 Left
+srcTop : 텍스쳐에서 읽는 영역 Top
+srcRight : 텍스쳐에서 읽는 영역 Right
+srcBottom : 텍스쳐에서 읽는 영역 Bottom
+Vertical : 버튼 이미지 분할 방향, TRUE(1), FALSE(0)
+Default : 기본 컨트롤 유무, TRUE(1), FALSE(0)
+Enable : 활성화 유무, TRUE(1), FALSE(0)
+Visible : 화면 보임 유무, TRUE(1), FALSE(0)
+
+[0]
+Description : 상태창 배경 (각 컨트롤 등록할때 첫번째로 등록해야 배경 역활을 한다.)
+DialogName : StatusBar
+Type : 1
+HotKey : 0
+Text : 
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 0
+dstLeft : 0
+dstTop : 0
+dstRight : 1024
+dstBottom : 40
+srcLeft : 0
+srcTop : 0
+srcRight : 1024
+srcBottom : 40
+Default : 0
+Enable : 1
+Visible : 1
+
+[1]
+Description : 인벤토리 배경 (각 컨트롤 등록할때 첫번째로 등록해야 배경 역활을 한다.)
+DialogName : Inventory
+Type : 1
+HotKey : 0
+Text : 
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 1
+dstLeft : 0
+dstTop : 0
+dstRight : 286
+dstBottom : 400
+srcLeft : 364
+srcTop : 0
+srcRight : 650
+srcBottom : 400
+Default : 0
+Enable : 1
+Visible : 1
+
+[2]
+Description : 캐릭터 정보창 배경 (각 컨트롤 등록할때 첫번째로 등록해야 배경 역활을 한다.)
+DialogName : Character
+Type : 1
+HotKey : 0
+Text : 
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 1
+dstLeft : 0
+dstTop : 0
+dstRight : 286
+dstBottom : 400
+srcLeft : 0
+srcTop : 0
+srcRight : 287
+srcBottom : 400
+Default : 0
+Enable : 1
+Visible : 1
+
+[3]
+Description : 사용자 아이디 or 별명 표시
+DialogName : StatusBar
+Type : 0
+HotKey : 0
+Text : 초보자
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+dstLeft : 19
+dstTop : 12
+dstRight : 210
+dstBottom : 28
+Default : 0
+Enable : 1
+Visible : 1
+
+[4]
+Description : 상태바 캐릭터 버튼
+DialogName : StatusBar
+Type : 2
+HotKey : 0
+Text :
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 0
+dstLeft : 800
+dstTop : 4
+dstRight : 832
+dstBottom : 36
+srcLeft : 0
+srcTop : 104
+srcRight : 128
+srcBottom : 136
+Vertical : 0
+Default : 0
+Enable : 1
+Visible : 1
+
+[5]
+Description : 상태바 인벤토리 버튼
+DialogName : StatusBar
+Type : 2
+HotKey : 0
+Text :
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 0
+dstLeft : 834
+dstTop : 4
+dstRight : 866
+dstBottom : 36
+srcLeft : 0
+srcTop : 138
+srcRight : 128
+srcBottom : 170
+Vertical : 0
+Default : 1
+Enable : 1
+Visible : 1
+
+[6]
+Description : 인벤토리 배낭 버튼 1
+DialogName : Inventory
+Type : 2
+HotKey : 0
+Text :
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 1
+dstLeft : 21
+dstTop : 47
+dstRight : 53
+dstBottom : 79
+srcLeft : 265
+srcTop : 873
+srcRight : 393
+srcBottom : 905
+Vertical : 0
+Default : 1
+Enable : 1
+Visible : 1
+
+[7]
+Description : 인벤토리 배낭 버튼 2
+DialogName : Inventory
+Type : 2
+HotKey : 0
+Text :
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 1
+dstLeft : 74
+dstTop : 47
+dstRight : 106
+dstBottom : 79
+srcLeft : 265
+srcTop : 905
+srcRight : 393
+srcBottom : 937
+Vertical : 0
+Default : 0
+Enable : 1
+Visible : 1
+
+[8]
+Description : 인벤토리 배낭 버튼 3
+DialogName : Inventory
+Type : 2
+HotKey : 0
+Text :
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 1
+dstLeft : 126
+dstTop : 47
+dstRight : 158
+dstBottom : 79
+srcLeft : 265
+srcTop : 937
+srcRight : 393
+srcBottom : 969
+Vertical : 0
+Default : 0
+Enable : 1
+Visible : 1
+
+[9]
+Description : 인벤토리 배낭 버튼 4
+DialogName : Inventory
+Type : 2
+HotKey : 0
+Text :
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 1
+dstLeft : 179
+dstTop : 47
+dstRight : 211
+dstBottom : 79
+srcLeft : 265
+srcTop : 969
+srcRight : 393
+srcBottom : 1001
+Vertical : 0
+Default : 0
+Enable : 1
+Visible : 1
+
+[10]
+Description : 인벤토리 배낭 버튼 5
+DialogName : Inventory
+Type : 2
+HotKey : 0
+Text :
+FontID : 0
+AlignHorizontal : 1
+AlignVertical : 1
+TextureID : 1
+dstLeft : 230
+dstTop : 47
+dstRight : 262
+dstBottom : 79
+srcLeft : 0
+srcTop : 955
+srcRight : 128
+srcBottom : 987
+Vertical : 0
+Default : 0
+Enable : 1
+Visible : 1

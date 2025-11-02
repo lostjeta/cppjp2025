@@ -129,7 +129,9 @@ LRESULT CALLBACK ZApp::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
     case WM_MBUTTONDOWN:
         if (g_currentState)
         {
-            g_currentState->OnMouseDown(LOWORD(lParam), HIWORD(lParam), (int)wParam);
+            std::cout << "gamemain = mouse down" << std::endl;
+            int button = (uMsg == WM_LBUTTONDOWN) ? 0 : (uMsg == WM_RBUTTONDOWN) ? 1 : 2; // 마지막에 드래그가 안되었던 이유
+            g_currentState->OnMouseDown(LOWORD(lParam), HIWORD(lParam), button);
         }
         break;
 
@@ -138,7 +140,10 @@ LRESULT CALLBACK ZApp::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
     case WM_MBUTTONUP:
         if (g_currentState)
         {
-            g_currentState->OnMouseUp(LOWORD(lParam), HIWORD(lParam), (int)wParam);
+            std::cout << "gamemain = mouse UP" << std::endl;
+            int button = (uMsg == WM_LBUTTONUP) ? 0 : (uMsg == WM_LBUTTONUP) ? 1 : 2;
+            std::cout << button << std::endl;
+            g_currentState->OnMouseUp(LOWORD(lParam), HIWORD(lParam), button);
         }
         break;
 
@@ -164,7 +169,7 @@ BOOL ZApp::Init()
         (double)m_ClientHeight / (double)m_ClientWidth
         , m_ClientWidth, m_ClientHeight);
 
-    ChangeState(new BasicRenderState(), *m_pGraphics);
+    ChangeState(new BasicRenderState(*m_pGraphics), *m_pGraphics);
 
     m_pGraphics->SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, (float)m_ClientHeight / (float)m_ClientWidth, 0.5f, 100.0f));
     m_lastTime = timeGetTime();

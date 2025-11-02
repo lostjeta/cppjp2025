@@ -1,0 +1,26 @@
+IFT
+
+[Description]
+TITLE : Texture ID를 기록한다. Ex) [0]
+FileName : Texture 파일의 실행파일 기준 상대경로를 기록한다. Ex) ./Data/GUI/GUI001.tga
+TransparentA : 투명색을 위한 Alpha값을 0 - 255 범위로 기록한다.
+TransparentR : 투명색을 위한 Red값을 0 - 255 범위로 기록한다.
+TransparentG : 투명색을 위한 Green값을 0 - 255 범위로 기록한다.
+TransparentB : 투명색을 위한 Blue값을 0 - 255 범위로 기록한다.
+D3DFORMAT : D3DFMT_A8R8G8B8 / D3DFMT_R8G8B8 / D3DFMT_A8R8G8B8 / D3DFMT_X8R8G8B8 / D3DFMT_R5G6B5 / D3DFMT_X1R5G5B5 / D3DFMT_A1R5G5B5
+
+[0]
+FileName : ./Data/GUI/GUI001.bmp
+TransparentA : 255
+TransparentR : 255
+TransparentG : 0
+TransparentB : 255
+D3DFORMAT : D3DFMT_A8R8G8B8
+
+[1]
+FileName : ./Data/GUI/GUI002.bmp
+TransparentA : 255
+TransparentR : 255
+TransparentG : 0
+TransparentB : 255
+D3DFORMAT : D3DFMT_A8R8G8B8

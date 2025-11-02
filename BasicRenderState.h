@@ -3,7 +3,7 @@
 #include "SpriteBatch.h"
 #include "ZTexture.h"
 
-
+class ZGUIManager;
 class BasicRenderState : public GameState
 {
 private:
@@ -11,16 +11,19 @@ private:
     double _deltaTime;      // 프레임과 프레임 사이 시간
     int _curX, _curY;
 
+    ZGraphics* _pGraphicsRef;
+
     std::vector<std::unique_ptr<class SampleBox>> boxes;
     std::vector<std::unique_ptr<class Sheet>> sheets;
 
     std::unique_ptr<DirectX::SpriteBatch> pSpriteBatch;
     std::unique_ptr<Bind::ZTexture> pTexture;
 
+    ZGUIManager* m_pGUIManager;
     ZFont m_Font;
 
 public:
-    BasicRenderState();
+    BasicRenderState(ZGraphics& gfx);
     ~BasicRenderState();
 
     void Enter(ZGraphics& gfx) override;

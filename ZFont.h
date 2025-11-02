@@ -21,8 +21,8 @@ public:
 
     const char* GetName() const;
     int GetSize() const;
-    BOOL isBold() const;
-    BOOL isItalic() const;
+    BOOL IsBold() const;
+    BOOL IsItalic() const;
 
     DirectX::SpriteFont* GetSpriteFont();
     DirectX::SpriteBatch* GetSpriteBatch();
@@ -33,8 +33,11 @@ public:
     // D3D11 텍스트 렌더링 (색상은 DirecxtX::XMFLOAT4 사용) RGBA -> XYZW 매핑
     // SpriteBatch를 외부에서 전달 받아서 사용 가능 (nulltptr이면 내부 spriteBatch 사용)
     BOOL FastPrint(long xPos, long yPos, const char* text, DirectX::SpriteBatch* externalBatch = nullptr);
+    BOOL FastPrint(long xPos, long yPos, const char8_t* text, DirectX::SpriteBatch* externalBatch = nullptr);
     BOOL PrintLine(long xPos, long yPos, long width, DirectX::XMFLOAT4 color, const char* text, DirectX::SpriteBatch* externalBatch = nullptr);
-    BOOL PrintEx(long xPos, long vPos, long width, long height, DirectX::XMFLOAT4 color, DWORD format, const char* text, DirectX::SpriteBatch* externalBatch = nullptr);
+    BOOL PrintLine(long xPos, long yPos, long width, DirectX::XMFLOAT4 color, const char8_t* text, DirectX::SpriteBatch* externalBatch = nullptr);
+    BOOL PrintEx(long xPos, long yPos, long width, long height, DirectX::XMFLOAT4 color, DWORD format, const char* text, DirectX::SpriteBatch* externalBatch = nullptr);
+    BOOL PrintEx(long xPos, long yPos, long width, long height, DirectX::XMFLOAT4 color, DWORD format, const char8_t* text, DirectX::SpriteBatch* externalBatch = nullptr);
 
     /*
     Format[in]

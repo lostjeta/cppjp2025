@@ -11,12 +11,13 @@ namespace dx = DirectX;
 
 extern void ChangeState(GameState* newState, ZGraphics& gfx);
 
-BasicRenderState::BasicRenderState()
+BasicRenderState::BasicRenderState(ZGraphics& gfx)
     : 
     _elapsedTime(0.0), 
     _deltaTime(0.0),
     _curX(0),
-    _curY(0)
+    _curY(0),
+    _pGraphicsRef(&gfx)
 {
 }
 
@@ -27,6 +28,12 @@ BasicRenderState::~BasicRenderState()
 void BasicRenderState::Enter(ZGraphics& gfx)
 {
     std::cout << "Enter BasicRenderState" << std::endl;
+
+    m_pGUIManager = new ZGUIManager(gfx.GetClientWidth(), gfx.GetClientHeight());
+
+    if (FALSE == m_pGUIManager->Init(&gfx))
+        return;
+
 
     ZInitFile iniFile;
 
@@ -68,6 +75,9 @@ void BasicRenderState::Exit()
     std::cout << "Exit BasicRenderState" << std::endl;
 
     m_Font.Free();
+
+    m_pGUIManager->Clear();
+    SAFE_DELETE(m_pGUIManager);
 }
 
 void BasicRenderState::Update(float deltaTime)
@@ -77,6 +87,8 @@ void BasicRenderState::Update(float deltaTime)
 
     for (auto& b : boxes) b->Update(deltaTime);
     for (auto& b : sheets) b->Update(deltaTime);
+
+    m_pGUIManager->Update(deltaTime);
 }
 
 void BasicRenderState::Render(ZGraphics& gfx)
@@ -112,10 +124,12 @@ void BasicRenderState::Render(ZGraphics& gfx)
     const float blendFactor[4] = {0.0f,0.0f ,0.0f ,0.0f };
     GetContext(gfx)->OMSetBlendState(GetBlendState(gfx), blendFactor, 0xffffffff);
 
+    m_pGUIManager->Render(_deltaTime);
+
     pSpriteBatch->Begin();
     if (m_Font.GetSpriteFont() != nullptr) {
+        m_Font.FastPrint(100, 80, u8"안녕", pSpriteBatch.get()); // 한글폰트까지 출력가능하게 수정
         m_Font.FastPrint(100, 100, "Hello World", pSpriteBatch.get());
-            
         m_Font.FastPrint(100, 120, "Welcome!", pSpriteBatch.get());
         m_Font.FastPrint(100, 140, "Font Test", pSpriteBatch.get());
 
@@ -162,17 +176,44 @@ void BasicRenderState::OnKeyUp(WPARAM wParam)
 
 void BasicRenderState::OnMouseDown(int x, int y, int button)
 {
+    std::cout << "mouse down" << std::endl;
+    if (m_pGUIManager && m_pGUIManager->IsInit())
+    {
+        UINT uMsg = (button == 0) ? WM_LBUTTONDOWN : (button == 1) ? WM_RBUTTONDOWN : WM_MBUTTONDOWN;
+        LPARAM IParam = MAKELPARAM(x, y);
+        WPARAM wParam = (button == 0) ? MK_LBUTTON : (button == 1) ? MK_RBUTTON : MK_MBUTTON;
 
+        // ZGUIManager에 메시지 전달
+        HWND hWnd = _pGraphicsRef->GetHWND();
+        m_pGUIManager->MsgProc(hWnd, uMsg, wParam, IParam);
+    }
 }
 
 void BasicRenderState::OnMouseUp(int x, int y, int button)
 {
+    std::cout << "mouse up" << std::endl;
+    if (m_pGUIManager && m_pGUIManager->IsInit())
+    {
+        UINT uMsg = (button == 0) ? WM_LBUTTONUP : (button == 1) ? WM_RBUTTONUP : WM_MBUTTONUP;
+        LPARAM IParam = MAKELPARAM(x, y);
+        WPARAM wParam = (button == 0) ? MK_LBUTTON : (button == 1) ? MK_RBUTTON : MK_MBUTTON;
 
+        // ZGUIManager에 메시지 전달
+        HWND hWnd = _pGraphicsRef->GetHWND();
+        m_pGUIManager->MsgProc(hWnd, uMsg, wParam, IParam);
+    }
 }
 
 void BasicRenderState::OnMouseMove(int x, int y)
 {
     _curX = x;
     _curY = y;
-    std::cout << _curX << " " << _curY << std::endl;
+    
+    if (m_pGUIManager && m_pGUIManager->IsInit()) {
+        LPARAM IParam = MAKELPARAM(x, y);
+        WPARAM wParam = 0;
+
+        HWND hWnd = _pGraphicsRef->GetHWND();
+        m_pGUIManager->MsgProc(hWnd, WM_MOUSEMOVE, wParam, IParam);
+    }
 }

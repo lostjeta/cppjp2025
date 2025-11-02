@@ -1,0 +1,15 @@
+IFT 
+
+[Description]
+TITLE : Font ID를 기록한다. Ex) [0]
+FontName : 폰트 이름 Ex) 굴림
+SIZE : 세로 픽셀을 의미하며 가로는 2/3의 Size만큼 픽셀크기를 갖는다.
+Bold : TRUE(1), FALSE(0)
+ITALIC : TRUE(1), FALSE(0)
+
+[0]
+FontName : ./Data/Font/NanumGothic_Full_16.spritefont
+Size : 16
+Bold : 0
+Italic : 0
+

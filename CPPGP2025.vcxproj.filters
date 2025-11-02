@@ -114,6 +114,27 @@
     <ClCompile Include="ZInitFile.cpp">
       <Filter>ZUI</Filter>
     </ClCompile>
+    <ClCompile Include="ZGUIResource.cpp">
+      <Filter>ZUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ZGUIControl.cpp">
+      <Filter>ZUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ZGUILable.cpp">
+      <Filter>ZUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ZGUIImage.cpp">
+      <Filter>ZUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ZGUIButton.cpp">
+      <Filter>ZUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ZGUIDialog.cpp">
+      <Filter>ZUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ZGUIManager.cpp">
+      <Filter>ZUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZMatrix.h">
@@ -243,6 +264,27 @@
       <Filter>ZUI</Filter>
     </ClInclude>
     <ClInclude Include="ZInitFile.h">
+      <Filter>ZUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ZGUIResource.h">
+      <Filter>ZUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ZGUIControl.h">
+      <Filter>ZUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ZGUILable.h">
+      <Filter>ZUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ZGUIImage.h">
+      <Filter>ZUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ZGUIButton.h">
+      <Filter>ZUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ZGUIDialog.h">
+      <Filter>ZUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ZGUIManager.h">
       <Filter>ZUI</Filter>
     </ClInclude>
   </ItemGroup>

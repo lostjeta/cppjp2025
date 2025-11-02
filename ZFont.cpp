@@ -40,12 +40,12 @@ int ZFont::GetSize() const
     return m_iSize;
 }
 
-BOOL ZFont::isBold() const
+BOOL ZFont::IsBold() const
 {
     return m_bBold;
 }
 
-BOOL ZFont::isItalic() const
+BOOL ZFont::IsItalic() const
 {
     return m_bItalic;
 }
@@ -135,6 +135,31 @@ BOOL ZFont::FastPrint(long xPos, long yPos, const char* text, DirectX::SpriteBat
     return TRUE;
 }
 
+BOOL ZFont::FastPrint(long xPos, long yPos, const char8_t* text, DirectX::SpriteBatch* externalBatch)
+{
+    if (m_pSpriteFont == nullptr)
+        return FALSE;
+
+    // 사용할 SpriteBatch 결정
+    DirectX::SpriteBatch* batch = externalBatch ? externalBatch : m_pSpriteBatch;
+    if (batch == nullptr)
+        return FALSE;
+
+    // UTF-8 to UTF-16 변환
+    std::wstring wText = Utf8ToWstring(reinterpret_cast<const char*>(text)); // 한글까지 
+
+    // DirectXTK SpriteFont 사용 (Begin/End는 외부에서 관리)
+    DirectX::XMFLOAT2 pos((float)xPos, (float)yPos);
+
+    // 요청된 크기와 .spritefont 파일의 기본 크기를 비교하여 스케일 계산
+    float defaultSize = m_pSpriteFont->GetLineSpacing();
+    float scale = (m_Size > 0 && defaultSize > 0) ? (float)m_Size / defaultSize : 1.0f;
+
+    m_pSpriteFont->DrawString(batch, wText.c_str(), pos, DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0, 0), scale);
+
+    return TRUE;
+}
+
 BOOL ZFont::PrintLine(long xPos, long yPos, long width, DirectX::XMFLOAT4 color, const char* text, DirectX::SpriteBatch* externalBatch)
 {
     if (m_pSpriteFont == nullptr)
@@ -161,6 +186,32 @@ BOOL ZFont::PrintLine(long xPos, long yPos, long width, DirectX::XMFLOAT4 color,
     return TRUE;
 }
 
+BOOL ZFont::PrintLine(long xPos, long yPos, long width, DirectX::XMFLOAT4 color, const char8_t* text, DirectX::SpriteBatch* externalBatch)
+{
+    if (m_pSpriteFont == nullptr)
+        return FALSE;
+
+    // 사용할 SpriteBatch 결정
+    DirectX::SpriteBatch* batch = externalBatch ? externalBatch : m_pSpriteBatch;
+    if (batch == nullptr)
+        return FALSE;
+
+    // UTF-8 to UTF-16 변환
+    std::wstring wText = Utf8ToWstring(reinterpret_cast<const char*>(text));
+
+    // DirectXTK SpriteFont 사용 (Begin/End는 외부에서 관리)
+    DirectX::XMVECTOR colorVec = DirectX::XMLoadFloat4(&color);
+    DirectX::XMFLOAT2 pos((float)xPos, (float)yPos);
+
+    // 요청된 크기와 .spritefont 파일의 기본 크기를 비교하여 스케일 계산
+    float defaultSize = m_pSpriteFont->GetLineSpacing();
+    float scale = (m_Size > 0 && defaultSize > 0) ? (float)m_Size / defaultSize : 1.0f;
+
+    m_pSpriteFont->DrawString(batch, wText.c_str(), pos, colorVec, 0.0f, DirectX::XMFLOAT2(0, 0), scale);
+
+    return TRUE;
+}
+
 BOOL ZFont::PrintEx(long xPos, long yPos, long width, long height, DirectX::XMFLOAT4 color, DWORD format, const char* text, DirectX::SpriteBatch* externalBatch)
 {
     if (m_pSpriteFont == nullptr)
@@ -173,6 +224,36 @@ BOOL ZFont::PrintEx(long xPos, long yPos, long width, long height, DirectX::XMFL
 
     // UTF-8 to UTF-16 변환
     std::wstring wText = Utf8ToWstring(text);
+
+    // DirectXTK SpriteFont 사용 (Begin/End는 외부에서 관리)
+    DirectX::XMVECTOR colorVec = DirectX::XMLoadFloat4(&color);
+    DirectX::XMFLOAT2 pos((float)xPos, (float)yPos);
+    DirectX::XMFLOAT2 origin(0, 0);
+
+    // 요청된 크기와 .spritefont 파일의 기본 크기를 비교하여 스케일 계산
+    // SpriteFont의 LineSpacing을 기본 크기로 사용
+    float defaultSize = m_pSpriteFont->GetLineSpacing();
+    float scale = (m_Size > 0 && defaultSize > 0) ? (float)m_Size / defaultSize : 1.0f;
+
+    m_pSpriteFont->DrawString(batch, wText.c_str(), pos, colorVec, 0.0f, origin, scale);
+
+    // Format 플래그는 DirectXTK에서 직접 처리 필요 (DT_CENTER, DT_RIGHT 등)
+
+    return TRUE;
+}
+
+BOOL ZFont::PrintEx(long xPos, long yPos, long width, long height, DirectX::XMFLOAT4 color, DWORD format, const char8_t* text, DirectX::SpriteBatch* externalBatch)
+{
+    if (m_pSpriteFont == nullptr)
+        return FALSE;
+
+    // 사용할 SpriteBatch 결정
+    DirectX::SpriteBatch* batch = externalBatch ? externalBatch : m_pSpriteBatch;
+    if (batch == nullptr)
+        return FALSE;
+
+    // UTF-8 to UTF-16 변환
+    std::wstring wText = Utf8ToWstring(reinterpret_cast<const char*>(text));
 
     // DirectXTK SpriteFont 사용 (Begin/End는 외부에서 관리)
     DirectX::XMVECTOR colorVec = DirectX::XMLoadFloat4(&color);
