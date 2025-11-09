@@ -3,6 +3,9 @@
 #include "GraphicsThrowMacros.h"
 #include <d3dcompiler.h>
 #include <DirectXMath.h> // dx math
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx11.h"
+#include "imgui/imgui_impl_win32.h"
 
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib") // Shader Compiler
@@ -124,10 +127,24 @@ ZGraphics::ZGraphics(HWND hWnd, double winRatio, DWORD width, DWORD height)
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
     GFX_THROW_INFO(pDevice->CreateBlendState(&blendDesc, &pBlendState));
+
+    // init imgui d3d impl
+    ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
+}
+
+ZGraphics::~ZGraphics()
+{
+    ImGui_ImplDX11_Shutdown();
 }
 
 void ZGraphics::EndFrame()
 {
+    if (imguiEnabled)
+    {
+        ImGui::Render();
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    }
+
 	HRESULT hr;
 
 #ifndef NDEBUG
@@ -137,6 +154,7 @@ void ZGraphics::EndFrame()
 	// 후면 버퍼의 내용을 화면에 표시(Present)합니다.
 	// 첫 번째 인자(SyncInterval): 수직 동기화 옵션. 1은 수직 동기화를 켭니다.
 	// 두 번째 인자(Flags): 추가적인 프레젠테이션 옵션.
+    //DXGI_SWAP_EFFECT_SEQUENTIAL
 	if (FAILED(hr = pSwap->Present(1u, 0u)))
 	{
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)
@@ -156,6 +174,18 @@ void ZGraphics::ClearBuffer(float red, float green, float blue) noexcept
 	const float color[] = { red,green,blue,1.0f }; // RGBA 순서
 	pContext->ClearRenderTargetView(pTarget.Get(), color);
     pContext->ClearDepthStencilView(pDSV.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+}
+
+void ZGraphics::BeginFrame(float red, float green, float blue) noexcept
+{
+    if (imguiEnabled)
+    {
+        ImGui_ImplDX11_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+    }
+
+    ClearBuffer(red, green, blue);
 }
 
 // 뷰포트(Viewport)를 설정하는 함수
@@ -211,6 +241,31 @@ DirectX::XMMATRIX ZGraphics::GetProjection() const noexcept
     return projection;
 }
 
+void ZGraphics::SetCamera(DirectX::FXMMATRIX cam) noexcept
+{
+    camera = cam;
+}
+
+DirectX::XMMATRIX ZGraphics::GetCamera() const noexcept
+{
+    return camera;
+}
+
+void ZGraphics::EnableImgui() noexcept
+{
+    imguiEnabled = true;
+}
+
+void ZGraphics::DisableImgui() noexcept
+{
+    imguiEnabled = false;
+}
+
+bool ZGraphics::IsImguiEnabled() const noexcept
+{
+    return imguiEnabled;
+}
+
 ID3D11Device* ZGraphics::GetDeviceCOM() noexcept
 {
     return pDevice.Get();
@@ -223,7 +278,7 @@ ID3D11DeviceContext* ZGraphics::GetDeviceContext() noexcept
 
 ID3D11BlendState* ZGraphics::GetBlendState() noexcept
 {
-    return pBlendState.Get();
+	return pBlendState.Get();
 }
 
 HWND ZGraphics::GetHWND() noexcept

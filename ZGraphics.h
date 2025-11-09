@@ -11,7 +11,9 @@ class ZGraphics
 	friend class ZGraphicsResource;
 
 private:
+    bool imguiEnabled = true;
     DirectX::XMMATRIX projection;
+    DirectX::XMMATRIX camera;
 
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;			// D3D11 장치, 리소스 생성 및 관리
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;			// 스왑 체인, 후면 버퍼와 화면 출력을 교체
@@ -67,6 +69,13 @@ public:
 		std::string reason;
 	};
 
+protected:
+    // 후면 버퍼를 지정된 색상으로 초기화
+    // red (0.0f ~ 1.0f)
+    // green (0.0f ~ 1.0f)
+    // blue (0.0f ~ 1.0f)
+    void ClearBuffer(float red, float green, float blue) noexcept;
+
 public:
 	ZGraphics(HWND hWnd, double winRatio, DWORD width, DWORD height);
 
@@ -75,20 +84,21 @@ public:
 	ZGraphics(const ZGraphics&) = delete;
 	ZGraphics& operator=(const ZGraphics&) = delete;
 
-	~ZGraphics() = default;
+    ~ZGraphics();
 
 	// 현재 프레임의 렌더링을 끝내고 후면 버퍼를 화면에 표시한다.
 	void EndFrame();
-	// 후면 버퍼를 지정된 색상으로 초기화
-	// red (0.0f ~ 1.0f)
-	// green (0.0f ~ 1.0f)
-	// blue (0.0f ~ 1.0f)
-	void ClearBuffer(float red, float green, float blue) noexcept;
+    void BeginFrame(float red, float green, float blue) noexcept;
     void SetViewport() noexcept;
     void RenderIndexed(UINT count) noxnd;
     void SetProjection(DirectX::FXMMATRIX proj) noexcept;
     DirectX::XMMATRIX GetProjection() const noexcept;
-
+    void SetCamera(DirectX::FXMMATRIX cam) noexcept;
+    DirectX::XMMATRIX GetCamera() const noexcept;
+    void EnableImgui() noexcept;
+    void DisableImgui() noexcept;
+    bool IsImguiEnabled() const noexcept;
+    
     // DirectXTK 사용을 위한 인터페이스 접근 메서드
     ID3D11Device* GetDeviceCOM() noexcept;
     ID3D11DeviceContext* GetDeviceContext() noexcept;
@@ -97,4 +107,3 @@ public:
     DWORD GetClientWidth();
     DWORD GetClientHeight();
 };
-

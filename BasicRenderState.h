@@ -4,6 +4,7 @@
 #include "ZTexture.h"
 
 class ZGUIManager;
+
 class BasicRenderState : public GameState
 {
 private:
@@ -11,7 +12,7 @@ private:
     double _deltaTime;      // 프레임과 프레임 사이 시간
     int _curX, _curY;
 
-    ZGraphics* _pGraphicsRef;
+    ZGraphics* _pGraphicsRef;  // For HWND access
 
     std::vector<std::unique_ptr<class SampleBox>> boxes;
     std::vector<std::unique_ptr<class Sheet>> sheets;
@@ -20,7 +21,7 @@ private:
     std::unique_ptr<Bind::ZTexture> pTexture;
 
     ZGUIManager* m_pGUIManager;
-    ZFont m_Font;
+    ZFont m_Font;  // 테스트용 폰트
 
 public:
     BasicRenderState(ZGraphics& gfx);

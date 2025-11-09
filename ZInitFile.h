@@ -14,7 +14,7 @@ class ZInitFile
 private:
     std::string m_FilePath;             // INI 파일 경로
     BOOL m_bLoaded;                     // 파일이 로드되었는가
-
+    
     // 캐시된 데이터 (성능 향상을 위해)
     std::map<std::string, std::map<std::string, std::string>> m_Cache;
 
@@ -32,7 +32,7 @@ public:
     // 값 읽기
     std::string GetValue(const char* pSection, const char* pKey, const char* pDefault = "");
     std::string GetValue(const std::string& section, const std::string& key, const std::string& defaultValue = "");
-
+    
     // 인덱스 기반 섹션에서 값 읽기 (섹션명이 "0", "1", "2" 등인 경우)
     std::string GetValue(int iIndex, const char* pKey, const char* pDefault = "");
     std::string GetValue(int iIndex, const std::string& key, const std::string& defaultValue = "");
@@ -44,7 +44,7 @@ public:
 
     // 섹션 리스트 가져오기
     BOOL GetSectionList(std::vector<std::string>& outList);
-
+    
     // 섹션명 리스트 가져오기 (GetTitleList와 동일)
     BOOL GetTitleList(std::vector<std::string>& outList);
 
@@ -57,7 +57,7 @@ public:
 
     // 파일 경로 가져오기
     const std::string& GetFilePath() const { return m_FilePath; }
-
+    
     // 로드 여부
     BOOL IsLoaded() const { return m_bLoaded; }
 
@@ -67,3 +67,5 @@ private:
     std::string ConvertToMultiByte(const wchar_t* wstr);
     std::wstring ConvertToWideChar(const char* str);
 };
+
+//---------------------------------------------------------------------------

@@ -35,7 +35,7 @@ BOOL ZInitFile::LoadIFT(const char* pFilePath)
         return FALSE;
 
     m_FilePath = pFilePath;
-
+    
     // 파일 존재 여부 확인
     DWORD dwAttrib = GetFileAttributesA(pFilePath);
     if (dwAttrib == INVALID_FILE_ATTRIBUTES || (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))
@@ -46,7 +46,7 @@ BOOL ZInitFile::LoadIFT(const char* pFilePath)
 
     // 캐시 로드
     LoadCache();
-
+    
     m_bLoaded = TRUE;
     return TRUE;
 }
@@ -77,7 +77,7 @@ std::string ZInitFile::GetValue(const char* pSection, const char* pKey, const ch
     // 캐시에서 검색 (LoadCache에서 모두 로드됨)
     std::string section(pSection);
     std::string key(pKey);
-
+    
     if (m_Cache.find(section) != m_Cache.end())
     {
         if (m_Cache[section].find(key) != m_Cache[section].end())
@@ -117,31 +117,30 @@ std::string ZInitFile::GetValue(int iIndex, const std::string& key, const std::s
 
 BOOL ZInitFile::SetValue(const char* pSection, const char* pKey, const char* pValue)
 {
-    //if (!m_bLoaded)
-      //  return FALSE;
+    if (!m_bLoaded)
+        return FALSE;
 
     // 캐시 업데이트
     m_Cache[std::string(pSection)][std::string(pKey)] = pValue;
-
+    
     // UTF-8 파일로 저장
     std::ofstream file(m_FilePath, std::ios::out | std::ios::trunc);
     if (!file.is_open())
         return FALSE;
-
+    
     // 모든 섹션과 키-값 쌍을 파일에 쓰기
     for (auto& sectionPair : m_Cache)
     {
         file << "[" << sectionPair.first << "]" << std::endl;
-
+        
         for (auto& keyValuePair : sectionPair.second)
         {
-            // file << keyValuePair.first << "=" << keyValuePair.second << std::endl;
-            file << keyValuePair.first << ":" << keyValuePair.second << std::endl;
+            file << keyValuePair.first << "=" << keyValuePair.second << std::endl;
         }
-
+        
         file << std::endl;  // 섹션 간 빈 줄
     }
-
+    
     file.close();
     return TRUE;
 }
@@ -198,7 +197,7 @@ BOOL ZInitFile::GetKeyList(const char* pSection, std::vector<std::string>& outLi
 
     // 캐시에서 해당 섹션의 모든 키 가져오기
     std::string section(pSection);
-
+    
     if (m_Cache.find(section) != m_Cache.end())
     {
         for (auto& keyValuePair : m_Cache[section])
@@ -244,9 +243,9 @@ void ZInitFile::LoadCache()
         return;
 
     // Windows 콘솔을 UTF-8 모드로 설정 (한글 출력용)
-#ifdef _WIN32
+    #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
-#endif
+    #endif
 
     // UTF-8 파일을 직접 읽기
     std::ifstream file(m_FilePath, std::ios::binary);
@@ -256,19 +255,19 @@ void ZInitFile::LoadCache()
     std::string currentSection;
     std::string line;
     bool firstLine = true;
-
+    
     while (std::getline(file, line))
     {
         // UTF-8 BOM 제거 (첫 번째 줄에서만)
-        if (firstLine && line.size() >= 3 &&
-            (unsigned char)line[0] == 0xEF &&
-            (unsigned char)line[1] == 0xBB &&
+        if (firstLine && line.size() >= 3 && 
+            (unsigned char)line[0] == 0xEF && 
+            (unsigned char)line[1] == 0xBB && 
             (unsigned char)line[2] == 0xBF)
         {
             line = line.substr(3);
         }
         firstLine = false;
-
+        
         // 공백 및 개행 문자 제거 (안전하게)
         size_t startPos = line.find_first_not_of(" \t\r\n");
         if (startPos == std::string::npos)
@@ -276,14 +275,14 @@ void ZInitFile::LoadCache()
             // 빈 줄
             continue;
         }
-
+        
         size_t endPos = line.find_last_not_of(" \t\r\n");
         line = line.substr(startPos, endPos - startPos + 1);
-
+        
         // 빈 줄이나 주석 무시
         if (line.empty() || line[0] == ';' || line[0] == '#')
             continue;
-
+        
         // 섹션 헤더 확인 [SectionName]
         if (line[0] == '[' && line.length() > 1 && line[line.length() - 1] == ']')
         {
@@ -297,7 +296,7 @@ void ZInitFile::LoadCache()
             }
             continue;
         }
-
+        
         // 키:값 쌍 파싱
         size_t equalPos = line.find(':');
         if (equalPos != std::string::npos && !currentSection.empty())
@@ -313,7 +312,7 @@ void ZInitFile::LoadCache()
             {
                 value = "";  // ':' 뒤에 아무것도 없음
             }
-
+            
             // 키의 앞뒤 공백 제거
             size_t keyStart = key.find_first_not_of(" \t");
             size_t keyEnd = key.find_last_not_of(" \t");
@@ -321,7 +320,7 @@ void ZInitFile::LoadCache()
             {
                 key = key.substr(keyStart, keyEnd - keyStart + 1);
             }
-
+            
             // 값의 앞뒤 공백 제거
             size_t valStart = value.find_first_not_of(" \t");
             if (valStart != std::string::npos)
@@ -333,7 +332,7 @@ void ZInitFile::LoadCache()
             {
                 value = "";  // 값이 비어있음
             }
-
+            
             if (!key.empty())
             {
                 m_Cache[currentSection][key] = value;
@@ -342,7 +341,7 @@ void ZInitFile::LoadCache()
             }
         }
     }
-
+    
     file.close();
 }
 
@@ -359,10 +358,10 @@ std::string ZInitFile::ConvertToMultiByte(const wchar_t* wstr)
 
     char* buffer = new char[size];
     WideCharToMultiByte(CP_ACP, 0, wstr, -1, buffer, size, NULL, NULL);
-
+    
     std::string result(buffer);
     delete[] buffer;
-
+    
     return result;
 }
 
@@ -379,10 +378,10 @@ std::wstring ZInitFile::ConvertToWideChar(const char* str)
 
     wchar_t* buffer = new wchar_t[size];
     MultiByteToWideChar(CP_ACP, 0, str, -1, buffer, size);
-
+    
     std::wstring result(buffer);
     delete[] buffer;
-
+    
     return result;
 }
 

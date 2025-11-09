@@ -1,4 +1,4 @@
-﻿// CPPGP2025.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
+// CPPGP2025.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
 //
 /*
 #define _CRT_SECURE_NO_WARNINGS
@@ -62,7 +62,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_MBUTTONDOWN:
         if (g_currentState)
         {
-            g_currentState->OnMouseDown(LOWORD(lParam), HIWORD(lParam), (int)wParam);
+            int button = (message == WM_LBUTTONDOWN) ? 0 : (message == WM_RBUTTONDOWN) ? 1 : 2;
+            g_currentState->OnMouseDown(LOWORD(lParam), HIWORD(lParam), button);
         }
         break;
     case WM_LBUTTONUP:
@@ -70,7 +71,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_MBUTTONUP:
         if (g_currentState)
         {
-            g_currentState->OnMouseUp(LOWORD(lParam), HIWORD(lParam), (int)wParam);
+            int button = (message == WM_LBUTTONUP) ? 0 : (message == WM_RBUTTONUP) ? 1 : 2;
+            g_currentState->OnMouseUp(LOWORD(lParam), HIWORD(lParam), button);
         }
         break;
     case WM_MOUSEMOVE:

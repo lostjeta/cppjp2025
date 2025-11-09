@@ -19,6 +19,8 @@ BasicRenderState::BasicRenderState(ZGraphics& gfx)
     _curY(0),
     _pGraphicsRef(&gfx)
 {
+    pSpriteBatch = std::make_unique<DirectX::SpriteBatch>(gfx.GetDeviceContext());
+    pTexture = std::make_unique<Bind::ZTexture>(gfx, L"dxlogo_256.bmp");
 }
 
 BasicRenderState::~BasicRenderState()
@@ -31,22 +33,20 @@ void BasicRenderState::Enter(ZGraphics& gfx)
 
     m_pGUIManager = new ZGUIManager(gfx.GetClientWidth(), gfx.GetClientHeight());
 
+    // GUI 로딩
     if (FALSE == m_pGUIManager->Init(&gfx))
         return;
 
-
-    ZInitFile iniFile;
-
-    std::string path = "./Data/Config.ift";
-    if (iniFile.LoadIFT(path)) {
-        std::cout << "파일 로드 성공!" << std::endl;
-        std::cout << iniFile.GetValue("TEST","Key1");
+    // 폰트 초기화 (한 번만 생성)
+    std::cout << "[Enter] Initializing m_Font..." << std::endl;
+    if (m_Font.Create(gfx, "./Data/Font/NanumGothic_Full_16.spritefont", 24))
+    {
+        std::cout << "[Enter] m_Font initialized successfully!" << std::endl;
     }
-    else {
-        iniFile.SetValue("TEST", "Key1", "Value1");
+    else
+    {
+        std::cout << "[Enter] ERROR: Failed to initialize m_Font!" << std::endl;
     }
-
-    m_Font.Create(gfx, "./Data/Font/NanumGothic_Full_16.spritefont",24); // 폰트 생성
 
     std::mt19937 rng(std::random_device{}());
     std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
@@ -65,15 +65,13 @@ void BasicRenderState::Enter(ZGraphics& gfx)
             ddist, odist, rdist
         ));
     }
-
-    pSpriteBatch = std::make_unique<dx::SpriteBatch>(GetContext(gfx));
-    pTexture = std::make_unique<Bind::ZTexture>(gfx, L"dxlogo_256.bmp");
 }
 
 void BasicRenderState::Exit()
 {
     std::cout << "Exit BasicRenderState" << std::endl;
 
+    // 폰트 해제
     m_Font.Free();
 
     m_pGUIManager->Clear();
@@ -108,55 +106,62 @@ void BasicRenderState::Render(ZGraphics& gfx)
     //    ((-(float)_curY / ((float)GetClientHeight(gfx) / 2.0f)) + 1.0f) * 2
     //); // using face color
 
-   //  DrawTexture(gfx);
-    /*
-    for (auto& b : boxes)
-    {
-        b->Render(gfx);
-    }
+    //DrawTexture(gfx);
 
-    for (auto& b : sheets)
-    {
-        b->Render(gfx);
-    }
-    */
+     for (auto& b : boxes)
+     {
+         b->Render(gfx);
+     }
+     
+     for (auto& b : sheets)
+     {
+         b->Render(gfx);
+     }
 
-    const float blendFactor[4] = {0.0f,0.0f ,0.0f ,0.0f };
+
+    // 알파 블렌드 상태 활성화 (투명 텍스처 렌더링을 위해)
+    const float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
     GetContext(gfx)->OMSetBlendState(GetBlendState(gfx), blendFactor, 0xffffffff);
 
-    m_pGUIManager->Render(_deltaTime);
+    //m_pGUIManager->Render(_deltaTime);
 
-    pSpriteBatch->Begin();
-    if (m_Font.GetSpriteFont() != nullptr) {
-        m_Font.FastPrint(100, 80, u8"안녕", pSpriteBatch.get()); // 한글폰트까지 출력가능하게 수정
-        m_Font.FastPrint(100, 100, "Hello World", pSpriteBatch.get());
-        m_Font.FastPrint(100, 120, "Welcome!", pSpriteBatch.get());
-        m_Font.FastPrint(100, 140, "Font Test", pSpriteBatch.get());
 
-        // Color test (Red)
-        DirectX::XMFLOAT4 red(1.0f, 0.0f, 0.0f, 1.0f);
-        m_Font.PrintLine(100, 160, 300, red, "Red Text", pSpriteBatch.get());
+    //-----
 
-        // Green text
-        DirectX::XMFLOAT4 green(0.0f, 1.0f, 0.0f, 1.0f);
-        m_Font.PrintLine(100, 180, 300, green, "Green Text", pSpriteBatch.get());
+    //pSpriteBatch->Begin();
 
-        // Blue text
-        DirectX::XMFLOAT4 blue(0.0f, 0.0f, 1.0f, 1.0f);
-        m_Font.PrintLine(100, 200, 300, blue, "Blue Text", pSpriteBatch.get());
+    //if (m_Font.GetSpriteFont() != nullptr)
+    //{
+    //    // Font rendering test
+    //    m_Font.FastPrint(100, 100, "Hello World", pSpriteBatch.get());
+    //    m_Font.FastPrint(100, 120, "Welcome!", pSpriteBatch.get());
+    //    m_Font.FastPrint(100, 140, "Font Test", pSpriteBatch.get());
 
-        // Centered text (Top)
-        DirectX::XMFLOAT4 white(1.0f, 1.0f, 1.0f, 1.0f);
-        m_Font.PrintEx(0, 0, 800, 100, white, DT_CENTER | DT_VCENTER, "Game Title", pSpriteBatch.get());
+    //    // Color test (Red)
+    //    DirectX::XMFLOAT4 red(1.0f, 0.0f, 0.0f, 1.0f);
+    //    m_Font.PrintLine(100, 160, 300, red, "Red Text", pSpriteBatch.get());
 
-        // Centered text (Bottom)
-        DirectX::XMFLOAT4 yellow(1.0f, 1.0f, 0.0f, 1.0f);
-        m_Font.PrintEx(0, 500, 800, 100, yellow, DT_CENTER | DT_BOTTOM, "Press SPACE to start", pSpriteBatch.get());
-    }
-   
+    //    // Green text
+    //    DirectX::XMFLOAT4 green(0.0f, 1.0f, 0.0f, 1.0f);
+    //    m_Font.PrintLine(100, 180, 300, green, "Green Text", pSpriteBatch.get());
 
-    pSpriteBatch->End();
+    //    // Blue text
+    //    DirectX::XMFLOAT4 blue(0.0f, 0.0f, 1.0f, 1.0f);
+    //    m_Font.PrintLine(100, 200, 300, blue, "Blue Text", pSpriteBatch.get());
 
+    //    // Centered text (Top)
+    //    DirectX::XMFLOAT4 white(1.0f, 1.0f, 1.0f, 1.0f);
+    //    m_Font.PrintEx(0, 0, 800, 100, white, DT_CENTER | DT_VCENTER, "Game Title", pSpriteBatch.get());
+    //    
+    //    // Centered text (Bottom)
+    //    DirectX::XMFLOAT4 yellow(1.0f, 1.0f, 0.0f, 1.0f);
+    //    m_Font.PrintEx(0, 500, 800, 100, yellow, DT_CENTER | DT_BOTTOM, "Press SPACE to start", pSpriteBatch.get());
+    //}
+
+    //pSpriteBatch->End();
+
+
+    // 알파 블렌드 비활성화 (3D 객체 렌더링을 위해)
     GetContext(gfx)->OMSetBlendState(nullptr, blendFactor, 0xffffffff);
 }
 
@@ -176,31 +181,30 @@ void BasicRenderState::OnKeyUp(WPARAM wParam)
 
 void BasicRenderState::OnMouseDown(int x, int y, int button)
 {
-    std::cout << "mouse down" << std::endl;
     if (m_pGUIManager && m_pGUIManager->IsInit())
     {
+        // Windows 메시지로 변환
         UINT uMsg = (button == 0) ? WM_LBUTTONDOWN : (button == 1) ? WM_RBUTTONDOWN : WM_MBUTTONDOWN;
-        LPARAM IParam = MAKELPARAM(x, y);
+        LPARAM lParam = MAKELPARAM(x, y);
         WPARAM wParam = (button == 0) ? MK_LBUTTON : (button == 1) ? MK_RBUTTON : MK_MBUTTON;
-
+        
         // ZGUIManager에 메시지 전달
         HWND hWnd = _pGraphicsRef->GetHWND();
-        m_pGUIManager->MsgProc(hWnd, uMsg, wParam, IParam);
+        m_pGUIManager->MsgProc(hWnd, uMsg, wParam, lParam);
     }
 }
 
 void BasicRenderState::OnMouseUp(int x, int y, int button)
-{
-    std::cout << "mouse up" << std::endl;
+{   
     if (m_pGUIManager && m_pGUIManager->IsInit())
     {
+        // Windows 메시지로 변환
         UINT uMsg = (button == 0) ? WM_LBUTTONUP : (button == 1) ? WM_RBUTTONUP : WM_MBUTTONUP;
-        LPARAM IParam = MAKELPARAM(x, y);
-        WPARAM wParam = (button == 0) ? MK_LBUTTON : (button == 1) ? MK_RBUTTON : MK_MBUTTON;
-
-        // ZGUIManager에 메시지 전달
+        LPARAM lParam = MAKELPARAM(x, y);
+        WPARAM wParam = 0;  // UP 메시지에서는 버튼 플래그 제거
+        
         HWND hWnd = _pGraphicsRef->GetHWND();
-        m_pGUIManager->MsgProc(hWnd, uMsg, wParam, IParam);
+        m_pGUIManager->MsgProc(hWnd, uMsg, wParam, lParam);
     }
 }
 
@@ -208,12 +212,15 @@ void BasicRenderState::OnMouseMove(int x, int y)
 {
     _curX = x;
     _curY = y;
+    // std::cout << _curX << " " << _curY << std::endl;
     
-    if (m_pGUIManager && m_pGUIManager->IsInit()) {
-        LPARAM IParam = MAKELPARAM(x, y);
-        WPARAM wParam = 0;
-
+    if (m_pGUIManager && m_pGUIManager->IsInit())
+    {
+        // Windows 메시지로 변환
+        LPARAM lParam = MAKELPARAM(x, y);
+        WPARAM wParam = 0;  // 버튼 상태는 현재 모르므로 0
+        
         HWND hWnd = _pGraphicsRef->GetHWND();
-        m_pGUIManager->MsgProc(hWnd, WM_MOUSEMOVE, wParam, IParam);
+        m_pGUIManager->MsgProc(hWnd, WM_MOUSEMOVE, wParam, lParam);
     }
 }
