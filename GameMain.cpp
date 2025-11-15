@@ -10,6 +10,7 @@
 #include "imgui/imgui_impl_dx11.h"
 #include "ImguiManager.h"
 #include "ZCamera.h"
+#include "PointLight.h"
 #include "GameMain.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -42,8 +43,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     SetupConsole();
 
     // 클라이언트 영역 크기
-    const int clientWidth = 1920;
-    const int clientHeight = 1080;
+    const int clientWidth = 1024;
+    const int clientHeight = 768;
 
     RECT windowRect = { 0, 0, clientWidth, clientHeight };
     AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
@@ -201,16 +202,19 @@ LRESULT CALLBACK ZApp::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
 
     case WM_LBUTTONDOWN:
-        if (g_currentState) {
+        if (g_currentState)
+        {
             g_currentState->OnMouseDown(LOWORD(lParam), HIWORD(lParam), 0);
         }
         break;
+
     case WM_RBUTTONDOWN:
         m_rightMouseDown = true;
         m_lastMouseX = LOWORD(lParam);
         m_lastMouseY = HIWORD(lParam);
         SetCapture(hWnd);
-        if (g_currentState) {
+        if (g_currentState)
+        {
             g_currentState->OnMouseDown(LOWORD(lParam), HIWORD(lParam), 1);
         }
         break;
@@ -224,10 +228,12 @@ LRESULT CALLBACK ZApp::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
 
     case WM_LBUTTONUP:
-        if (g_currentState) {
+        if (g_currentState)
+        {
             g_currentState->OnMouseUp(LOWORD(lParam), HIWORD(lParam), 0);
         }
         break;
+
     case WM_RBUTTONUP:
         m_rightMouseDown = false;
         ReleaseCapture();
@@ -305,9 +311,12 @@ BOOL ZApp::Init()
         (double)m_ClientHeight / (double)m_ClientWidth
         , m_ClientWidth, m_ClientHeight);
 
+    light = std::make_unique<PointLight>(*m_pGraphics);
+
     ChangeState(new BasicRenderState(*m_pGraphics), *m_pGraphics);
 
     m_pGraphics->SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, (float)m_ClientHeight / (float)m_ClientWidth, 0.5f, 100.0f));
+    //m_pGraphics->SetCamera(DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f));
     m_pGraphics->SetCamera(cam.GetMatrix());
     m_lastTime = timeGetTime();
 
@@ -344,14 +353,13 @@ BOOL ZApp::Frame()
     // 계산된 'c' 값을 사용하여 화면 배경색을 동적으로 변경합니다.
     // Red와 Green 채널이 'c' 값에 따라 변하므로, 배경색이 파란색(0,0,1)과 청록색(1,1,1) 사이를 오가게 됩니다.
     //m_pGraphics->BeginFrame(c, c, 1.0f);
-    m_pGraphics->BeginFrame(0, 0, 1.0f);
+    m_pGraphics->BeginFrame(0, 0, 0);
 
     ProcessCameraInput(dt);
 
     cam.Update();
-    // 실시간으로 변하는 카메라 행렬을 ZGraphics에 업데이트
-    // -> ZTransformVSConstBuffer에서 사용.
-    m_pGraphics->SetCamera(cam.GetMatrix());
+    m_pGraphics->SetCamera(cam.GetMatrix()); // 실시간으로 변하는 카메라 행렬을 ZGraphics에 업데이트 -> ZTransformVSConstBuffer에서 사용.
+    light->Bind(*m_pGraphics, cam.GetMatrix());
     m_pGraphics->SetViewport();
 
     if (g_currentState)
@@ -360,9 +368,13 @@ BOOL ZApp::Frame()
         g_currentState->Render(*m_pGraphics);
     }
 
+    // PointLight
+    light->Render(*m_pGraphics);
+
     // ImGUI
     if (m_pGraphics->IsImguiEnabled())
     {
+
         static bool show_demo_window = false;
         if (show_demo_window)
         {
@@ -410,7 +422,8 @@ BOOL ZApp::Frame()
         }
         ImGui::End();
 
-        cam.SpawnConrtolWindow();
+        cam.SpawnControlWindow();
+        light->SpawnControlWindow();
     }
 
 	// 렌더링된 후면 버퍼를 화면에 표시합니다.

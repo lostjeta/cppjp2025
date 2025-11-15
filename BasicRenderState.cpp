@@ -1,6 +1,7 @@
 ﻿#include "ZGUI.h"
 #include "Sheet.h"
 #include "SampleBox.h"
+#include "LightBox.h"
 #include "BasicRenderState.h"
 #include "GraphicsThrowMacros.h"
 #include <d3dcompiler.h>
@@ -53,17 +54,25 @@ void BasicRenderState::Enter(ZGraphics& gfx)
     std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
     std::uniform_real_distribution<float> odist(0.0f, 3.1415f * 0.3f);
     std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
-    for (auto i = 0; i < 80; i++)
+    std::uniform_real_distribution<float> bdist(0.4f, 3.0f);
+    std::uniform_real_distribution<float> cdist(0.0f, 1.0f);
+    
+    for (auto i = 0; i < 180; i++)
     {
-        boxes.push_back(std::make_unique<SampleBox>(
-            gfx, rng, adist,
-            ddist, odist, rdist
+        //boxes.push_back(std::make_unique<SampleBox>(
+        //    gfx, rng, adist,
+        //    ddist, odist, rdist
+        //));
+        const DirectX::XMFLOAT3 mat = { cdist(rng), cdist(rng), cdist(rng) };
+        lightBoxes.push_back(std::make_unique<LightBox>(
+            gfx, rng, adist, ddist,
+            odist, rdist, bdist, mat
         ));
 
-        sheets.push_back(std::make_unique<Sheet>(
-            gfx, rng, adist,
-            ddist, odist, rdist
-        ));
+        //sheets.push_back(std::make_unique<Sheet>(
+        //    gfx, rng, adist,
+        //    ddist, odist, rdist
+        //));
     }
 }
 
@@ -83,7 +92,8 @@ void BasicRenderState::Update(float deltaTime)
     _elapsedTime += deltaTime;
     _deltaTime = deltaTime;
 
-    for (auto& b : boxes) b->Update(deltaTime);
+    //for (auto& b : boxes) b->Update(deltaTime);
+    for (auto& b : lightBoxes) b->Update(deltaTime);
     for (auto& b : sheets) b->Update(deltaTime);
 
     m_pGUIManager->Update(deltaTime);
@@ -108,15 +118,16 @@ void BasicRenderState::Render(ZGraphics& gfx)
 
     //DrawTexture(gfx);
 
-     for (auto& b : boxes)
+     //for (auto& b : boxes)
+     for (auto& b : lightBoxes)
      {
          b->Render(gfx);
      }
      
-     for (auto& b : sheets)
-     {
-         b->Render(gfx);
-     }
+     //for (auto& b : sheets)
+     //{
+     //    b->Render(gfx);
+     //}
 
 
     // 알파 블렌드 상태 활성화 (투명 텍스처 렌더링을 위해)

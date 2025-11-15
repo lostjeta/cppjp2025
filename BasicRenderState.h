@@ -15,6 +15,7 @@ private:
     ZGraphics* _pGraphicsRef;  // For HWND access
 
     std::vector<std::unique_ptr<class SampleBox>> boxes;
+    std::vector<std::unique_ptr<class LightBox>> lightBoxes;
     std::vector<std::unique_ptr<class Sheet>> sheets;
 
     std::unique_ptr<DirectX::SpriteBatch> pSpriteBatch;

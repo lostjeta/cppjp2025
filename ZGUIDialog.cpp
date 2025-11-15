@@ -1,4 +1,4 @@
-﻿
+
 //-----------------------------------------------------------------------------
 
 #include "ZGUI.h"
@@ -207,22 +207,21 @@ BOOL ZGUIDialog::SetCallback( PCALLBACKZGUIEVENT pCallback, void* pUserContext )
 //-----------------------------------------------------------------------------
 // Need to call this now
 
-
-BOOL ZGUIDialog::Init(int iDialogID, const std::string& name, ZGUIResource* pResource)
+BOOL ZGUIDialog::Init( int iDialogID, const std::string& name, ZGUIResource* pResource )
 {
-    if (pResource == NULL)
-        return FALSE;
+	if( pResource == NULL )
+		return FALSE;
 
-    m_iDialogID = iDialogID;
-    m_Name = name;
-    m_pResourceRef = pResource;
-    // 모든 다이얼로그는 리소스에 등록되고 참조된다.
-    m_pResourceRef->RegisterDialog(this);
+	m_iDialogID = iDialogID;
+	m_Name = name;
+	m_pResourceRef = pResource;
+	// 모든 다이얼로그는 리소스에 등록되고 참조된다.
+	m_pResourceRef->RegisterDialog( this );
 
-    // 다이얼로그 초기화 로그 출력 (std::cout 사용)
-    std::cout << "[ZGUIDialog] Initialized: " << name << " (ID: " << iDialogID << ")" << std::endl;
+	// 다이얼로그 초기화 로그 출력 (std::cout 사용)
+	std::cout << "[ZGUIDialog] Initialized: " << name << " (ID: " << iDialogID << ")" << std::endl;
 
-    return TRUE;
+	return TRUE;
 }
 
 //-----------------------------------------------------------------------------

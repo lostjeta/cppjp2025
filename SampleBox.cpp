@@ -116,6 +116,6 @@ DirectX::XMMATRIX SampleBox::GetTransformXM() const noexcept
 {
     return DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
         DirectX::XMMatrixTranslation(r, 0.0f, 0.0f) *
-        DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
-        DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+        DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi);
+        //* DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f); // 이제 카메라가 있기 때문에 직접 거리를 둘 필요 없다.
 }

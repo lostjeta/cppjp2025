@@ -79,7 +79,7 @@ public:
     ~ZGUIDialog();
 
     // Need to call this now
-    BOOL Init(int iDialogID, const std::string& name, ZGUIResource* pResource );
+    BOOL Init( int iDialogID, const std::string& name, ZGUIResource* pResource );
 
     // Windows message handler
     BOOL MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );

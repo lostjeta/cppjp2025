@@ -168,6 +168,18 @@
     <ClCompile Include="ZCamera.cpp">
       <Filter>D3D\ZD3D11</Filter>
     </ClCompile>
+    <ClCompile Include="LightBox.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>D3D\ZD3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="SolidSphere.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="ZStencil.cpp">
+      <Filter>D3D\Binderable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ZMatrix.h">
@@ -347,6 +359,27 @@
     <ClInclude Include="ZCamera.h">
       <Filter>D3D\ZD3D11</Filter>
     </ClInclude>
+    <ClInclude Include="IndexedTriangleList.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="LightBox.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>D3D\ZD3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="SolidSphere.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="ZStencil.h">
+      <Filter>D3D\Binderable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DXGetErrorDescription.inl">
@@ -386,6 +419,18 @@
       <Filter>D3D\Shader</Filter>
     </FxCompile>
     <FxCompile Include="TexturePS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongPS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SolidPS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SolidVS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PhongVS.hlsl">
       <Filter>D3D\Shader</Filter>
     </FxCompile>
   </ItemGroup>

@@ -12,12 +12,13 @@ private:
     ImguiManager imgui;
     float speedFactor = 1.0f;
     ZCamera cam;
+    std::unique_ptr<class PointLight> light;
 
     // 카메라 제어 변수 추가
     bool m_rightMouseDown = false;
     int m_lastMouseX = 0;
     int m_lastMouseY = 0;
-    const float CAMERA_MOVE_SPEED = 30.0f;
+    const float CAMERA_MOVE_SPEED = 10.0f;
     const float CAMERA_MOUSE_SENSITIVITY = 0.005f;
 
     void ProcessCameraInput(float deltaTime);
