@@ -3,6 +3,7 @@
 #include "GraphicsThrowMacros.h"
 #include <d3dcompiler.h>
 #include <DirectXMath.h> // dx math
+#include "ZGraphics.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
@@ -134,7 +135,8 @@ ZGraphics::ZGraphics(HWND hWnd, double winRatio, DWORD width, DWORD height)
 
 ZGraphics::~ZGraphics()
 {
-    ImGui_ImplDX11_Shutdown();
+    // ImGui shutdown은 ZApp::Shutdown()에서 처리됨
+    // 여기서 호출하면 중복 shutdown으로 crash 발생
 }
 
 void ZGraphics::EndFrame()
@@ -249,6 +251,26 @@ void ZGraphics::SetCamera(DirectX::FXMMATRIX cam) noexcept
 DirectX::XMMATRIX ZGraphics::GetCamera() const noexcept
 {
     return camera;
+}
+
+void ZGraphics::SetDirectionalLight(const DirectionalLightData& light) noexcept
+{
+    directionalLight = light;
+}
+
+const ZGraphics::DirectionalLightData& ZGraphics::GetDirectionalLight() const noexcept
+{
+    return directionalLight;
+}
+
+void ZGraphics::SetPointLight(const PointLightData& light) noexcept
+{
+    pointLight = light;
+}
+
+const ZGraphics::PointLightData& ZGraphics::GetPointLight() const noexcept
+{
+    return pointLight;
 }
 
 void ZGraphics::EnableImgui() noexcept

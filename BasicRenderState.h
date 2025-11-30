@@ -2,6 +2,8 @@
 #include "GameState.h"
 #include "SpriteBatch.h"
 #include "ZTexture.h"
+#include <set>
+#include <optional>
 
 class ZGUIManager;
 
@@ -15,14 +17,30 @@ private:
     ZGraphics* _pGraphicsRef;  // For HWND access
 
     std::vector<std::unique_ptr<class SampleBox>> boxes;
-    std::vector<std::unique_ptr<class LightBox>> lightBoxes;
     std::vector<std::unique_ptr<class Sheet>> sheets;
+    std::vector<std::unique_ptr<class LightBox>> lightBoxes;
+    std::vector<std::unique_ptr<class Cylinder>> lightCylinder;
+    std::vector<std::unique_ptr<class Pyramid>> lightPyramid;
+    std::vector<std::unique_ptr<class TexturedBox>> textureBox;
+
+    std::vector<std::unique_ptr<class MeshTest>> meshModel;
+
+    std::unique_ptr<class FbxStaticModel> fbxStaticModel;
+    std::unique_ptr<class FbxTBNModel> fbxTBNModel;
+    std::unique_ptr<class FbxSkinnedModel> fbxSkinnedModel;
 
     std::unique_ptr<DirectX::SpriteBatch> pSpriteBatch;
     std::unique_ptr<Bind::ZTexture> pTexture;
 
     ZGUIManager* m_pGUIManager;
     ZFont m_Font;  // 테스트용 폰트
+
+    std::optional<int> comboBoxIndex;
+    std::set<int> boxControlIds;
+
+private:
+    void SpawnLightBoxWindowManager(ZGraphics& gfx);
+    void SpawnBoxWindows(ZGraphics& gfx) noexcept;
 
 public:
     BasicRenderState(ZGraphics& gfx);

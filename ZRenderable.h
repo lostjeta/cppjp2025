@@ -45,4 +45,16 @@ protected:
     }
     void AddBind(std::unique_ptr<Bind::ZBindable> bind) noxnd;
     void AddIndexBuffer(std::unique_ptr<Bind::ZIndexBuffer> ibuf) noxnd;
+    // Helper for custom Render() implementations
+    void BindAll(ZGraphics& gfx) const noxnd
+    {
+        for (auto& b : binds)
+        {
+            b->Bind(gfx);
+        }
+        for (auto& b : GetStaticBinds())
+        {
+            b->Bind(gfx);
+        }
+    }
 };

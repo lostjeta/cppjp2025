@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-
-
 #include <d3d11.h>
 #include <wrl.h> // Microsoft::WRL::ComPtr
 #include <tchar.h>

@@ -46,8 +46,7 @@ Sheet::Sheet(ZGraphics& gfx,
         model.vertices[2].tex = { 0.0f,1.0f };
         model.vertices[3].tex = { 1.0f,1.0f };
 
-        AddStaticBind(std::make_unique<Bind::ZTexture>(gfx, L"dxlogo_256.bmp"));
-        //AddStaticBind(std::make_unique<Bind::ZTexture>(gfx, (const TCHAR*)"GameOver.bmp"));
+        AddStaticBind(std::make_unique<Bind::ZTexture>(gfx, L"./Data/Images/dxlogo_256.bmp"));
 
         AddStaticBind(std::make_unique<Bind::ZVertexBuffer>(gfx, model.vertices));
 

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "ChiliException.h"
 #include <wrl.h> // ComPtr
+#include <DirectXMath.h> // DirectX Math
 #include "DxgiInfoManager.h"
 #include "ZConditionalNoExcept.h"
 
@@ -10,10 +11,33 @@ class ZGraphics
 {
 	friend class ZGraphicsResource;
 
+public:
+    // DirectionalLight 정보 구조체
+    struct DirectionalLightData
+    {
+        DirectX::XMFLOAT4 ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
+        DirectX::XMFLOAT4 diffuse = { 0.3f, 0.3f, 0.3f, 1.0f };
+        DirectX::XMFLOAT4 specular = { 0.2f, 0.2f, 0.2f, 1.0f };
+        DirectX::XMFLOAT3 direction = { 0.0f, -1.0f, 1.0f };
+    };
+
+    // PointLight 정보 구조체
+    struct PointLightData
+    {
+        DirectX::XMFLOAT4 ambient = { 0.05f, 0.05f, 0.05f, 1.0f };
+        DirectX::XMFLOAT4 diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
+        DirectX::XMFLOAT4 specular = { 1.0f, 1.0f, 1.0f, 1.0f };
+        DirectX::XMFLOAT3 position = { 0.0f, 0.0f, 0.0f };
+        float range = 100.0f;
+        DirectX::XMFLOAT3 att = { 1.0f, 0.045f, 0.0075f };
+    };
+
 private:
     bool imguiEnabled = true;
     DirectX::XMMATRIX projection;
     DirectX::XMMATRIX camera;
+    DirectionalLightData directionalLight;  // DirectionalLight 정보 저장
+    PointLightData pointLight;              // PointLight 정보 저장
 
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;			// D3D11 장치, 리소스 생성 및 관리
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwap;			// 스왑 체인, 후면 버퍼와 화면 출력을 교체
@@ -69,7 +93,8 @@ public:
 		std::string reason;
 	};
 
-protected:
+//protected:
+    public:
     // 후면 버퍼를 지정된 색상으로 초기화
     // red (0.0f ~ 1.0f)
     // green (0.0f ~ 1.0f)
@@ -94,6 +119,10 @@ public:
     void SetProjection(DirectX::FXMMATRIX proj) noexcept;
     DirectX::XMMATRIX GetProjection() const noexcept;
     void SetCamera(DirectX::FXMMATRIX cam) noexcept;
+    void SetDirectionalLight(const DirectionalLightData& light) noexcept;
+    const DirectionalLightData& GetDirectionalLight() const noexcept;
+    void SetPointLight(const PointLightData& light) noexcept;
+    const PointLightData& GetPointLight() const noexcept;
     DirectX::XMMATRIX GetCamera() const noexcept;
     void EnableImgui() noexcept;
     void DisableImgui() noexcept;

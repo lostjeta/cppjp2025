@@ -10,8 +10,8 @@ namespace Bind
     private:
         struct Transforms
         {
+            DirectX::XMMATRIX modelView;
             DirectX::XMMATRIX modelViewProj;
-            DirectX::XMMATRIX model;
         };
     private:
         // VSConstBuffer는 매프래임마다 다시 계산하기 때문에 재활용한다.
@@ -19,7 +19,7 @@ namespace Bind
         const ZRenderable& parent;
 
     public:
-        ZTransformVSConstBuffer(ZGraphics& gfx, const ZRenderable& parent, UINT slog = 0);
+        ZTransformVSConstBuffer(ZGraphics& gfx, const ZRenderable& parent, UINT slot = 0);
         void Bind(ZGraphics& gfx) noexcept override;
     };
 }

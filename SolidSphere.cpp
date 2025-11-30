@@ -19,8 +19,8 @@ SolidSphere::SolidSphere(ZGraphics& gfx, float radius)
         };
         auto model = Sphere::Make<Vertex>();
         model.Transform(dx::XMMatrixScaling(radius, radius, radius));
-        AddBind(std::make_unique<ZVertexBuffer>(gfx, model.vertices));
-        AddIndexBuffer(std::make_unique<ZIndexBuffer>(gfx, model.indices));
+        AddStaticBind(std::make_unique<ZVertexBuffer>(gfx, model.vertices));
+        AddStaticIndexBuffer(std::make_unique<ZIndexBuffer>(gfx, model.indices));
 
         auto pvs = std::make_unique<ZVertexShader>(gfx, L"./x64/Debug/SolidVS.cso");
         auto pvsbc = pvs->GetBytecode();

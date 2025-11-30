@@ -40,6 +40,12 @@
     <Filter Include="D3D\ZGUI">
       <UniqueIdentifier>{8d7185dc-cc1d-4415-8db4-db3b15c153b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="D3D\Renderable\Primitives">
+      <UniqueIdentifier>{60047457-09e4-4e0f-9b77-a1154e3e65f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="D3D\Helper">
+      <UniqueIdentifier>{0f5faed7-116f-4093-949d-f95d9827da48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ZMatrix.cpp">
@@ -171,14 +177,62 @@
     <ClCompile Include="LightBox.cpp">
       <Filter>D3D\Renderable</Filter>
     </ClCompile>
-    <ClCompile Include="PointLight.cpp">
+    <ClCompile Include="ZPointLight.cpp">
       <Filter>D3D\ZD3D11</Filter>
     </ClCompile>
     <ClCompile Include="SolidSphere.cpp">
       <Filter>D3D\Renderable</Filter>
     </ClCompile>
-    <ClCompile Include="ZStencil.cpp">
+    <ClCompile Include="Cylinder.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedBox.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>D3D\Renderable\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>D3D\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>D3D\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshTest.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="ZDirectionalLight.cpp">
+      <Filter>D3D\ZD3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxManager.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="ZTextureSRV.cpp">
       <Filter>D3D\Binderable</Filter>
+    </ClCompile>
+    <ClCompile Include="ZRasterizer.cpp">
+      <Filter>D3D\Binderable</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxSkinnedModel.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxStaticModel.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxTBNModel.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerControlState.cpp">
+      <Filter>D3D\State</Filter>
+    </ClCompile>
+    <ClCompile Include="FbxModel.cpp">
+      <Filter>D3D\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="ZTrackingCamera.cpp">
+      <Filter>D3D\ZD3D11</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -284,9 +338,6 @@
     <ClInclude Include="ZIndexedTriangleList.h">
       <Filter>D3D\ZD3D11</Filter>
     </ClInclude>
-    <ClInclude Include="Plane.h">
-      <Filter>D3D\Renderable</Filter>
-    </ClInclude>
     <ClInclude Include="ZMath.h">
       <Filter>D3D\ZD3D11</Filter>
     </ClInclude>
@@ -359,26 +410,83 @@
     <ClInclude Include="ZCamera.h">
       <Filter>D3D\ZD3D11</Filter>
     </ClInclude>
-    <ClInclude Include="IndexedTriangleList.h">
-      <Filter>D3D\Renderable</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>D3D\Renderable</Filter>
-    </ClInclude>
     <ClInclude Include="LightBox.h">
       <Filter>D3D\Renderable</Filter>
     </ClInclude>
-    <ClInclude Include="PointLight.h">
+    <ClInclude Include="ZPointLight.h">
       <Filter>D3D\ZD3D11</Filter>
     </ClInclude>
     <ClInclude Include="SolidSphere.h">
       <Filter>D3D\Renderable</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
+    <ClInclude Include="ZInteractableTransform.h">
       <Filter>D3D\Renderable</Filter>
     </ClInclude>
-    <ClInclude Include="ZStencil.h">
+    <ClInclude Include="Cylinder.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>D3D\Renderable\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Prism.h">
+      <Filter>D3D\Renderable\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>D3D\Renderable\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>D3D\Renderable\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Cone.h">
+      <Filter>D3D\Renderable\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexedTriangleList.h">
+      <Filter>D3D\Renderable\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedBox.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>D3D\Renderable\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>D3D\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>D3D\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshTest.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="ZDirectionalLight.h">
+      <Filter>D3D\ZD3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="ZTextureSRV.h">
       <Filter>D3D\Binderable</Filter>
+    </ClInclude>
+    <ClInclude Include="ZRasterizer.h">
+      <Filter>D3D\Binderable</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxSkinnedModel.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxStaticModel.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxTBNModel.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerControlState.h">
+      <Filter>D3D\State</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxModel.h">
+      <Filter>D3D\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="ZTrackingCamera.h">
+      <Filter>D3D\ZD3D11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -415,10 +523,10 @@
     <FxCompile Include="VertexShaderCubeDepth.hlsl">
       <Filter>D3D\Shader</Filter>
     </FxCompile>
-    <FxCompile Include="TextureVS.hlsl">
+    <FxCompile Include="TexturedPhongVS.hlsl">
       <Filter>D3D\Shader</Filter>
     </FxCompile>
-    <FxCompile Include="TexturePS.hlsl">
+    <FxCompile Include="TexturedPhongPS.hlsl">
       <Filter>D3D\Shader</Filter>
     </FxCompile>
     <FxCompile Include="PhongPS.hlsl">
@@ -431,6 +539,51 @@
       <Filter>D3D\Shader</Filter>
     </FxCompile>
     <FxCompile Include="PhongVS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="IndexedPhongPS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BlendedPhongVS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="BlendedPhongPS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinnedPS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinnedVS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="StaticPS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="StaticVS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TBNPS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TBNVS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinnedPS_NormalMap.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinnedVS_NormalMap.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TexturePS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="TextureVS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinnedModelPS.hlsl">
+      <Filter>D3D\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SkinnedModelVS.hlsl">
       <Filter>D3D\Shader</Filter>
     </FxCompile>
   </ItemGroup>

@@ -1,27 +1,23 @@
 ﻿#pragma once
-#include "ZRenderableBase.h"
+#include "ZInteractableTransform.h"
 
-class LightBox : public ZRenderableBase<LightBox>
+class LightBox : public ZInteractableTransform<LightBox>
 {
 private:
-    float r; // box radius
-    // camera center rotation
-    float roll = 0.0f;  // z
-    float pitch = 0.0f; // x
-    float yaw = 0.0f;   // y
-    // world center rotation
-    float theta;
-    float phi;
-    float chi;
+    struct PSMaterialConstant
+    {
+        DirectX::XMFLOAT3 color;
+        float specularIntensity = 0.6f;
+        float specularPower = 5.0; // 5:플라스틱,무광택, 30:금속/유리, 100:거울/크롬
+        float padding[3];
+    } materialConstants;
+    using MaterialCbuf = Bind::PSConstBuffer<PSMaterialConstant>;
 
-    // speed (delta/s)
-    float droll;
-    float dpitch;
-    float dyaw;
-    float dtheta;
-    float dphi;
-    float dchi;
+    // model transform
+    DirectX::XMFLOAT3X3 mt;
 
+private:
+    void SyncMaterial(ZGraphics& gfx) noexcept(!IS_DEBUG);
 public:
     LightBox(ZGraphics& gfx, std::mt19937& rng,
         std::uniform_real_distribution<float>& adist,
@@ -30,6 +26,6 @@ public:
         std::uniform_real_distribution<float>& rdist,
         std::uniform_real_distribution<float>& bdist,
         DirectX::XMFLOAT3 materialColor);
-    void Update(float dt) noexcept override;
     DirectX::XMMATRIX GetTransformXM() const noexcept override;
+    bool SpawnControlWindow(int id, ZGraphics& gfx) noexcept;
 };

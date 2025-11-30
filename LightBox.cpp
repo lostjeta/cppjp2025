@@ -1,9 +1,17 @@
 ﻿#include "ZD3D11.h"
 #include "Cube.h"
-#include "LightBox.h"
 #include "ZBindableBase.h"
+#include "LightBox.h"
+#include "imgui/imgui.h"
 #include "GraphicsThrowMacros.h"
 
+
+void LightBox::SyncMaterial(ZGraphics& gfx) noexcept(!IS_DEBUG)
+{
+    auto pConstPS = QueryBindable<MaterialCbuf>(); // 특정 상수 버퍼 획득
+    assert(pConstPS != nullptr);
+    pConstPS->Update(gfx, materialConstants); // 수정된 최신 정보로 갱신
+}
 
 LightBox::LightBox(ZGraphics& gfx,
     std::mt19937& rng,
@@ -11,19 +19,10 @@ LightBox::LightBox(ZGraphics& gfx,
     std::uniform_real_distribution<float>& ddist,   // delta
     std::uniform_real_distribution<float>& odist,   // 
     std::uniform_real_distribution<float>& rdist,   // radius
-    std::uniform_real_distribution<float>& bdist,   // radius
+    std::uniform_real_distribution<float>& bdist,
     DirectX::XMFLOAT3 materialColor)
     :
-    r(rdist(rng)),
-    droll(ddist(rng)),
-    dpitch(ddist(rng)),
-    dyaw(ddist(rng)),
-    dphi(odist(rng)),
-    dtheta(odist(rng)),
-    dchi(odist(rng)),
-    chi(adist(rng)),
-    theta(adist(rng)),
-    phi(adist(rng))
+    ZInteractableTransform(gfx, rng, adist, ddist, odist, rdist)
 {
     if (!IsStaticInitialized())
     {
@@ -53,39 +52,60 @@ LightBox::LightBox(ZGraphics& gfx,
         AddStaticBind(std::make_unique<Bind::ZInputLayout>(gfx, ied, pvsbc));
 
         AddStaticBind(std::make_unique<Bind::ZTopology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
     }
     else
     {
         SetIndexFromStatic();
     }
 
+    materialConstants.color = materialColor;
+    AddBind(std::make_unique<Bind::PSConstBuffer<PSMaterialConstant>>(gfx, materialConstants, 1u /*slot1*/));
+
+    // model deformation transform (per instance, not stored as bind)
+    DirectX::XMStoreFloat3x3(
+        &mt,
+        DirectX::XMMatrixScaling(1.0f, 1.0f, bdist(rng))
+    );
+
     AddBind(std::make_unique<Bind::ZTransformVSConstBuffer>(gfx, *this));
-
-    struct PSMaterialConstant
-    {
-        alignas(16) DirectX::XMFLOAT3 color;
-        float specularIntensity = 0.6;
-        float specularPower = 30.0;
-        float padding[2];
-    } colorConst;
-    colorConst.color = materialColor;
-    AddBind(std::make_unique<Bind::PSConstBuffer<PSMaterialConstant>>(gfx, colorConst, 1u));
-}
-
-void LightBox::Update(float dt) noexcept
-{
-    roll += droll * dt;
-    pitch += dpitch * dt;
-    yaw += dyaw * dt;
-    theta += dtheta * dt;
-    phi += dphi * dt;
-    chi += dchi * dt;
 }
 
 DirectX::XMMATRIX LightBox::GetTransformXM() const noexcept
 {
-    return DirectX::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-        DirectX::XMMatrixTranslation(r, 0.0f, 0.0f) *
-        DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi);
-    //* DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f); // 이제 카메라가 있기 때문에 직접 거리를 둘 필요 없다.
+    namespace dx = DirectX;
+    return dx::XMLoadFloat3x3(&mt) * ZInteractableTransform::GetTransformXM();
+}
+
+bool LightBox::SpawnControlWindow(int id, ZGraphics& gfx) noexcept
+{
+    using namespace std::string_literals;
+
+    bool dirty = false;
+    bool open = true;
+    if (ImGui::Begin(("Box "s + std::to_string(id)).c_str(), &open))
+    {
+        ImGui::Text("Material Properties");
+        const auto cd = ImGui::ColorEdit3("Material Color", &materialConstants.color.x);
+        const auto sid = ImGui::SliderFloat("Specular Intensity", &materialConstants.specularIntensity, 0.05f, 4.0f, "%.2f", ImGuiSliderFlags_Logarithmic);
+        const auto spd = ImGui::SliderFloat("Specular Power", &materialConstants.specularPower, 1.0f, 200.0f, "%.2f", ImGuiSliderFlags_Logarithmic);
+        dirty = cd || sid || spd;
+
+        ImGui::Text("Position");
+        ImGui::SliderFloat("R", &r, 0.0f, 80.0f, "%.1f");
+        ImGui::SliderAngle("Theta", &theta, -180.0f, 180.0f);
+        ImGui::SliderAngle("Phi", &phi, -180.0f, 180.0f);
+        ImGui::Text("Orientation");
+        ImGui::SliderAngle("Roll", &roll, -180.0f, 180.0f);
+        ImGui::SliderAngle("Pitch", &pitch, -180.0f, 180.0f);
+        ImGui::SliderAngle("Yaw", &yaw, -180.0f, 180.0f);
+    }
+    ImGui::End();
+
+    if (dirty)
+    {
+        SyncMaterial(gfx);
+    }
+
+    return open;
 }

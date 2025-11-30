@@ -9,10 +9,10 @@ class ZApp : public ZApplication
 private:
 	ZGraphics* m_pGraphics;
     DWORD m_lastTime = 0;
-    ImguiManager imgui;
     float speedFactor = 1.0f;
     ZCamera cam;
-    std::unique_ptr<class PointLight> light;
+    std::unique_ptr<class ZDirectionalLight> dirLight;
+    std::unique_ptr<class ZPointLight> pointLight;
 
     // 카메라 제어 변수 추가
     bool m_rightMouseDown = false;
@@ -22,6 +22,10 @@ private:
     const float CAMERA_MOUSE_SENSITIVITY = 0.005f;
 
     void ProcessCameraInput(float deltaTime);
+
+public:
+    Keyboard kbd;
+    Mouse mouse;
 
 public:
 	virtual LRESULT CALLBACK MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

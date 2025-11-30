@@ -6,4 +6,6 @@
 #include "ZPixelShader.h"
 #include "ZInputLayout.h"
 #include "ZTopology.h"
+#include "ZRasterizer.h"
+#include "ZSampler.h"
 #include "ZTransformVSConstBuffer.h"

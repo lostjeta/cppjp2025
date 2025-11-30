@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include <vector>
 #include <type_traits>
+//#include "Graphics.h"
 #include "ZColor.h"
 #include "ZConditionalNoexcept.h"
 
-namespace Dvtx // DirectX Vertex
+namespace Dvtx
 {
     class VertexLayout
     {
@@ -15,9 +16,13 @@ namespace Dvtx // DirectX Vertex
             Position3D,
             Texture2D,
             Normal,
+            Tangent,
+            Bitangent,
             Float3Color,
             Float4Color,
             BGRAColor,
+            UInt4,
+            Float4,
             Count,
         };
         template<ElementType> struct Map;
@@ -25,43 +30,78 @@ namespace Dvtx // DirectX Vertex
         {
             using SysType = DirectX::XMFLOAT2;
             static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
-            static constexpr const char* semantic = "Position";
+            static constexpr const char* semantic = "POSITION";
+            static constexpr const char* code = "P2";
         };
         template<> struct Map<Position3D>
         {
             using SysType = DirectX::XMFLOAT3;
             static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-            static constexpr const char* semantic = "Position";
+            static constexpr const char* semantic = "POSITION";
+            static constexpr const char* code = "P3";
         };
         template<> struct Map<Texture2D>
         {
             using SysType = DirectX::XMFLOAT2;
             static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32_FLOAT;
-            static constexpr const char* semantic = "Texcoord";
+            static constexpr const char* semantic = "TEXCOORD";
+            static constexpr const char* code = "T2";
         };
         template<> struct Map<Normal>
         {
             using SysType = DirectX::XMFLOAT3;
             static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-            static constexpr const char* semantic = "Normal";
+            static constexpr const char* semantic = "NORMAL";
+            static constexpr const char* code = "N";
+        };
+        template<> struct Map<Tangent>
+        {
+            using SysType = DirectX::XMFLOAT3;
+            static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+            static constexpr const char* semantic = "TANGENT";
+            static constexpr const char* code = "Nt";
+        };
+        template<> struct Map<Bitangent>
+        {
+            using SysType = DirectX::XMFLOAT3;
+            static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+            static constexpr const char* semantic = "BINORMAL";
+            static constexpr const char* code = "Nb";
         };
         template<> struct Map<Float3Color>
         {
             using SysType = DirectX::XMFLOAT3;
             static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-            static constexpr const char* semantic = "Color";
+            static constexpr const char* semantic = "COLOR";
+            static constexpr const char* code = "C3";
         };
         template<> struct Map<Float4Color>
         {
             using SysType = DirectX::XMFLOAT4;
             static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
-            static constexpr const char* semantic = "Color";
+            static constexpr const char* semantic = "COLOR";
+            static constexpr const char* code = "C4";
         };
         template<> struct Map<BGRAColor>
         {
             using SysType = ::BGRAColor;
             static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-            static constexpr const char* semantic = "Color";
+            static constexpr const char* semantic = "COLOR";
+            static constexpr const char* code = "C8";
+        };
+        template<> struct Map<UInt4>
+        {
+            using SysType = DirectX::XMUINT4;
+            static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_UINT;
+            static constexpr const char* semantic = "BLENDINDICES";
+            static constexpr const char* code = "BI";
+        };
+        template<> struct Map<Float4>
+        {
+            using SysType = DirectX::XMFLOAT4;
+            static constexpr DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+            static constexpr const char* semantic = "BLENDWEIGHT";
+            static constexpr const char* code = "BW";
         };
 
         class Element
@@ -74,9 +114,10 @@ namespace Dvtx // DirectX Vertex
             static constexpr size_t SizeOf(ElementType type) noxnd;
             ElementType GetType() const noexcept;
             D3D11_INPUT_ELEMENT_DESC GetDesc() const noxnd;
+            const char* GetCode() const noexcept;
         private:
             template<ElementType type>
-            static constexpr D3D11_INPUT_ELEMENT_DESC GenerateDesc(size_t offset) noxnd
+            static constexpr D3D11_INPUT_ELEMENT_DESC GenerateDesc(size_t offset) noexcept
             {
                 return { Map<type>::semantic,0,Map<type>::dxgiFormat,0,(UINT)offset,D3D11_INPUT_PER_VERTEX_DATA,0 };
             }
@@ -84,6 +125,7 @@ namespace Dvtx // DirectX Vertex
             ElementType type;
             size_t offset;
         };
+
     public:
         template<ElementType Type>
         const Element& Resolve() const noxnd
@@ -96,16 +138,14 @@ namespace Dvtx // DirectX Vertex
                 }
             }
             assert("Could not resolve element type" && false);
-            return elements[0]; // IntelliSense 경고 회피용
+            return elements.front();
         }
         const Element& ResolveByIndex(size_t i) const noxnd;
         VertexLayout& Append(ElementType type) noxnd;
         size_t Size() const noxnd;
-        size_t GetElementCount() const noexcept
-        {
-            return elements.size();
-        }
+        size_t GetElementCount() const noexcept;
         std::vector<D3D11_INPUT_ELEMENT_DESC> GetD3DLayout() const noxnd;
+        std::string GetCode() const noxnd;
     private:
         std::vector<Element> elements;
     };
@@ -139,6 +179,12 @@ namespace Dvtx // DirectX Vertex
             case VertexLayout::Normal:
                 SetAttribute<VertexLayout::Normal>(pAttribute, std::forward<T>(val));
                 break;
+            case VertexLayout::Tangent:
+                SetAttribute<VertexLayout::Tangent>(pAttribute, std::forward<T>(val));
+                break;
+            case VertexLayout::Bitangent:
+                SetAttribute<VertexLayout::Bitangent>(pAttribute, std::forward<T>(val));
+                break;
             case VertexLayout::Float3Color:
                 SetAttribute<VertexLayout::Float3Color>(pAttribute, std::forward<T>(val));
                 break;
@@ -148,26 +194,26 @@ namespace Dvtx // DirectX Vertex
             case VertexLayout::BGRAColor:
                 SetAttribute<VertexLayout::BGRAColor>(pAttribute, std::forward<T>(val));
                 break;
+            case VertexLayout::UInt4:
+                SetAttribute<VertexLayout::UInt4>(pAttribute, std::forward<T>(val));
+                break;
+            case VertexLayout::Float4:
+                SetAttribute<VertexLayout::Float4>(pAttribute, std::forward<T>(val));
+                break;
             default:
                 assert("Bad element type" && false);
             }
         }
+    protected:
+        Vertex(char* pData, const VertexLayout& layout) noxnd;
+    private:
         // enables parameter pack setting of multiple parameters by element index
         template<typename First, typename ...Rest>
         void SetAttributeByIndex(size_t i, First&& first, Rest&&... rest) noxnd
         {
-#ifndef __INTELLISENSE__
-            // 실제 컴파일러가 사용하는 코드 (정상 동작)
-            SetAttributeByIndex(i, std::forward<First>(first));  // calls single-param version
-            SetAttributeByIndex(i + 1, std::forward<Rest>(rest)...);  // recursive call
-#else
-            // IntelliSense가 보는 코드 (경고 방지용 더미)
-            (void)i; (void)first; (void)sizeof...(rest);
-#endif
+            SetAttributeByIndex(i, std::forward<First>(first));
+            SetAttributeByIndex(i + 1, std::forward<Rest>(rest)...);
         }
-    protected:
-        Vertex(char* pData, const VertexLayout& layout) noxnd;
-    private:
         // helper to reduce code duplication in SetAttributeByIndex
         template<VertexLayout::ElementType DestLayoutType, typename SrcType>
         void SetAttribute(char* pAttribute, SrcType&& val) noxnd
@@ -203,9 +249,10 @@ namespace Dvtx // DirectX Vertex
     class VertexBuffer
     {
     public:
-        VertexBuffer(VertexLayout layout) noxnd;
+        VertexBuffer(VertexLayout layout, size_t size = 0u) noxnd;
         const char* GetData() const noxnd;
         const VertexLayout& GetLayout() const noexcept;
+        void Resize(size_t newSize) noxnd;
         size_t Size() const noxnd;
         size_t SizeBytes() const noxnd;
         template<typename ...Params>
